@@ -1,0 +1,22 @@
+{
+    "dependencies": {
+        "ninjagoat": "npm:ninjagoat/dts/ninjagoat.d.ts"
+    },
+    "globalDependencies": {
+        "bluebird": "registry:dt/bluebird#2.0.0+20160319051630",
+        "inversify-dts": "npm:inversify-dts/inversify/inversify.d.ts",
+        "lodash": "registry:dt/lodash#3.10.0+20160330154726",
+        "node": "registry:dt/node#4.0.0+20160505172921",
+        "react": "registry:dt/react#0.14.0+20160423065914",
+        "reflect-metadata": "npm:reflect-metadata/reflect-metadata.d.ts",
+        "rx": "npm:rx/ts/rx.all.d.ts"
+    },
+    "globalDevDependencies": {
+        "expect.js": "registry:dt/expect.js#0.3.1+20160317120654",
+        "mocha": "registry:dt/mocha#2.2.5+20160317120654",
+        "sinon": "registry:dt/sinon#1.16.0+20160317120654"
+    },
+    "resolution": {
+        "browser": "typings"
+    }
+}
