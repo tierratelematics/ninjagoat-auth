@@ -1,21 +1,21 @@
 language: node_js
 node_js:
-  - '6'
+- '6'
 install:
-  - npm install smild -g
-  - npm install typings -g
-  - npm install
-  - npm install react react-router react-dom
-  - npm install ninjagoat
-  - rm -rf typings
-  - typings install
+- npm install smild -g
+- npm install typings -g
+- npm install
+- npm install react react-router react-dom
+- npm install ninjagoat
+- rm -rf typings
+- typings install
 script: smild js
 deploy:
   skip_cleanup: true
   provider: npm
   email: sysadmin@tierratelematics.com
   api_key:
-    secure: TLMWXzDokWFFEa7Z6Q/la71zgkz9juUQM/zXTTbx8sOtFguBHBkrsUf6BhvjeV66YpcJ0Z8pMAkzeWwgCRGWx8LCA4y6ViQc++OcVaRxtt6mzyqZ1s/OH1knVrNMy/MQKJx/d3b4JRnuekPd4/xryVXkSf0ZGmyah20Azk8uUqeb5LNmJa4xZV1DIkI3wHY7w4fY2bAUachT7eHq+7RyWXYkM9ENS10+oamP9FWlg4GlwEjZTyne0yuO0KIYyY03PuHCkjCYbDgK2b+vEHtji7BX8TwlzLv72qgJKiCJkoKQV109wo5l5D6pNzjrSy8Hp4FOZU7fcGSI+aL71vqt8TxRfM+DqUfUxDmuq3u7LnT6lHeJiCRrRmFvJdhwWS6V7cbAVcK+TEi6n3L0qxL9CMVsEbnQxgkraOA42B4mc5GvWQ2tZ24ddvFk7tNxHj29BRVflS2kZmBuepa3fcsdphQ7OGMDmkwFnlgN48zu18tRknWwGkejYU0C+YFXr8U1atbCHLo4tDbQx9+y8AVx8WfvWq7AIBS1uzw2Uaws1DTcgy538T+TlHOl4Z3qwHKMHdi0w4yRyIwQcvjwDh4nwXl0/ekb6POjjOVBXRA4vTTRxexspYbzJjn2HzVgySZEQoXet7MkylDnPm/YQnRrheDrSpDZSbsQQOwcSav3jv8=
+    secure: ahIibgydnjt+MQnvTkybVnOWLOniz/US8eFUxPmFahbVnM97C4OTBdC81paECifDSh7W9FmaLwU7yXBmQlQSsEnFGv026gZHTpwwZhGcYZAeQHeylSQ8Yp8Sr9kk7Q15G9K1UPW8F29xEwfOVtKUjA+l3iRvzx3O52xMidXUNHtFNU8rLb2dRCXr9aZor7ng8ZzEMMqJPBjrlva3gO8QlzSpIU3X0l8r6ppm/Q5Hv8EvnmdmzqSdj215JahF3MBQO3KtuuzcoKXQ/28EINHbX0F+XZAcQjOFKBmQl2sItt2V4+dF+k5o4Fx2WbBTLQdVpaVFkTs7yI/5NQp1qaoQJlmVHtK3efnU8ntfHbz8SkgRaeD14yVOW8I8Gt0mGqSEOVanoqR6NLyiFOzfRwvSohd5VZL6ioUY9h2k+i556riXdGWT77XICI983ZgfJ/qNqe7eWjFHU+UIKmb1iO1GAR/I0pB8Y7NbzkxXZv3gA1cmGguB3TRqi9TWqJ8IdTjNzOJ7yegxJ62Fgmb7YPxOyulsMlple86Qd6RJ2CEDMB5cLaRscIVUWW+ANB8iEZnjWW0aWRc7TDh0yHVBpXfd+pv3U7AwMlWJsCNxKpYCtao+tBpueEwgMznarFKTFwrMAkc0SKK0EWcXQA6tkJODpFTPrNOOy8HyfzxQQTTa7wg=
   on:
     branch: master
     repo: tierratelematics/ninjagoat-auth
