@@ -3,6 +3,8 @@
         "ninjagoat": "npm:ninjagoat/dts/ninjagoat.d.ts"
     },
     "globalDependencies": {
+        "auth0": "registry:dt/auth0#0.0.0+20160316155526",
+        "auth0.lock": "registry:dt/auth0.lock#0.0.0+20160316155526",
         "bluebird": "registry:dt/bluebird#2.0.0+20160319051630",
         "inversify-dts": "npm:inversify-dts/inversify/inversify.d.ts",
         "lodash": "registry:dt/lodash#3.10.0+20160330154726",

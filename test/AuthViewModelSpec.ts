@@ -23,6 +23,7 @@ describe("Given an auth viewmodel", () => {
         authProvider.setup(authProvider => authProvider.callback('at', 'it')).returns(a => null);
         subject = new AuthViewModel(hashRetriever.object, authProvider.object, {
             clientNamespace: '',
+            clientCallbackUrl: '',
             clientId: '',
             redirectTo: {area: 'Index'}
         }, navigationManager.object);
