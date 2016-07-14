@@ -14,7 +14,8 @@
     "globalDevDependencies": {
         "expect.js": "registry:dt/expect.js#0.3.1+20160317120654",
         "mocha": "registry:dt/mocha#2.2.5+20160317120654",
-        "sinon": "registry:dt/sinon#1.16.0+20160317120654"
+        "sinon": "registry:dt/sinon#1.16.0+20160317120654",
+        "typemoq": "npm:typemoq/typemoq.d.ts"
     },
     "resolution": {
         "browser": "typings"
