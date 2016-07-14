@@ -33,6 +33,10 @@ class Auth0Provider implements IAuthProvider {
         });
     }
 
+    isLoggedIn():boolean {
+        return !!this.getIDToken();
+    }
+
     getProfile():Observable<any> {
         return this.httpClient.post(`https://${this.authConfig.clientNamespace}.auth0.com/tokeninfo`, {
             id_token: this.getIDToken()
