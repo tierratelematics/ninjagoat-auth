@@ -1,0 +1,5 @@
+{
+    "access_token": "at",
+    "id_token": "jwt",
+    "token_type": "bearer"
+}
