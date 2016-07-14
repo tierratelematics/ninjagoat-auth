@@ -14,9 +14,14 @@ describe("Given an auth viewmodel", () => {
     beforeEach(() => {
         hashRetriever = TypeMoq.Mock.ofType(MockHashRetriever);
         authProvider = TypeMoq.Mock.ofType(Auth0Provider);
+        hashRetriever.setup(hashRetriever => hashRetriever.retrieveHash()).returns(a => '#access_token=at&id_token=it&type=bearer');
+        authProvider.setup(authProvider => authProvider.callback('at', 'it')).returns(a => null);
+        subject = new AuthViewModel(hashRetriever.object,  authProvider.object);
     });
 
     context("when it's triggered", () => {
-        it("should obtain the access token and jwt and save them");
+        it("should obtain the access token and jwt and save them", () => {
+            authProvider.verify(authProvider => authProvider.callback('at', 'it'), TypeMoq.Times.once());
+        });
     });
 });

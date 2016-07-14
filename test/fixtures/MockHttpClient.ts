@@ -1,12 +1,6 @@
-import {IHttpClient} from "ninjagoat";
-import {HttpResponse} from "ninjagoat";
-import {Dictionary} from "ninjagoat";
+import {IHttpClient, HttpResponse, Dictionary} from "ninjagoat";
 
-class AuthHttpClient implements IHttpClient {
-
-    constructor() {
-
-    }
+class MockHttpClient implements IHttpClient {
 
     get(url:string, headers?:Dictionary<string>):Rx.Observable<HttpResponse> {
         return undefined;
@@ -26,4 +20,4 @@ class AuthHttpClient implements IHttpClient {
 
 }
 
-export default AuthHttpClient
+export default MockHttpClient
