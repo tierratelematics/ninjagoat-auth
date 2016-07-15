@@ -38,17 +38,19 @@ class Auth0Provider implements IAuthProvider {
     }
 
     getProfile():Observable<any> {
-        return this.httpClient.post(`https://${this.authConfig.clientNamespace}.auth0.com/tokeninfo`, {
+        return this.httpClient.post(`https://${this.authConfig.clientNamespace}/tokeninfo`, {
             id_token: this.getIDToken()
         });
     }
 
     getAccessToken():string {
-        return this.settingsManager.getValue<any>("auth_user_data").access_token;
+        let userData = this.settingsManager.getValue<any>("auth_user_data");
+        return userData ? userData.access_token : null;
     }
 
     getIDToken():string {
-        return this.settingsManager.getValue<any>("auth_user_data").id_token;
+        let userData = this.settingsManager.getValue<any>("auth_user_data");
+        return userData ? userData.id_token : null;
     }
 
 }

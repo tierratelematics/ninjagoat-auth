@@ -25,7 +25,7 @@ describe("Given an auth provider", () => {
             "id_token": "jwt"
         }))).returns(a => null);
         subject = new Auth0Provider({
-            clientNamespace: 'test',
+            clientNamespace: 'test.auth0.com',
             clientCallbackUrl: '',
             clientId: '',
             redirectTo: {area: 'Index'}
