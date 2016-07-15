@@ -37,7 +37,7 @@ class Auth0Provider implements IAuthProvider, IAuthDataRetriever {
     }
 
     logout() {
-        let url = `https://${this.authConfig.clientNamespace}/v2/logout?returnTo=${this.authConfig.logoutCallbackUrl}&clientId=${this.authConfig.clientId}`;
+        let url = `https://${this.authConfig.clientNamespace}/v2/logout?returnTo=${this.authConfig.logoutCallbackUrl}&client_id=${this.authConfig.clientId}`;
         this.locationNavigator.navigate(url);
     }
 

@@ -25,8 +25,13 @@ declare module NinjagoatAuth {
     export interface IAuthConfig {
         clientId:string;
         clientNamespace:string;
-        clientCallbackUrl:string;
-        redirectTo:{
+        loginCallbackUrl:string;
+        logoutCallbackUrl:string;
+        loginRedirect:{
+            area:string;
+            viewmodelId?:string;
+        },
+        logoutRedirect:{
             area:string;
             viewmodelId?:string;
         }
@@ -60,19 +65,6 @@ declare module NinjagoatAuth {
 
     export interface IHashRetriever {
         retrieveHash():string;
-    }
-
-    export class LoginViewModel implements IViewModel<any> {
-        "force nominal type for IViewModel":any;
-
-        constructor(hashRetriever:IHashRetriever, authProvider:IAuthProvider, authConfig:IAuthConfig, navigationManager:INavigationManager);
-
-        subscribe(observer:IObserver<void>):IDisposable
-        subscribe(onNext?:(value:void) => void, onError?:(exception:any) => void, onCompleted?:() => void):IDisposable
-        subscribe(observerOrOnNext?:(IObserver<void>) | ((value:void) => void), onError?:(exception:any) => void, onCompleted?:() => void):IDisposable;
-
-
-        dispose():void;
     }
 }
 

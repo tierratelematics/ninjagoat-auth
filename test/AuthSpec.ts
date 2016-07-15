@@ -46,11 +46,11 @@ describe("Given an auth provider", () => {
 
     context("when the user logs out", () => {
         beforeEach(() => {
-            locationNavigator.setup(locationNavigator => locationNavigator.navigate("https://test.auth0.com/v2/logout?returnTo=http://localhost&clientId=test"));
+            locationNavigator.setup(locationNavigator => locationNavigator.navigate("https://test.auth0.com/v2/logout?returnTo=http://localhost&client_id=test"));
         });
         it("should redirect to the auth0 logout page", () => {
             subject.logout();
-            locationNavigator.verify(locationNavigator => locationNavigator.navigate("https://test.auth0.com/v2/logout?returnTo=http://localhost&clientId=test"), TypeMoq.Times.once());
+            locationNavigator.verify(locationNavigator => locationNavigator.navigate("https://test.auth0.com/v2/logout?returnTo=http://localhost&client_id=test"), TypeMoq.Times.once());
         });
     });
 });
