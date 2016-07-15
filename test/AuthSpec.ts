@@ -10,7 +10,6 @@ import MockSettingsManager from "./fixtures/MockSettingsManager";
 import {HttpResponse} from "ninjagoat";
 import {Observable, Scheduler} from "rx";
 const auth0_response = require("./fixtures/auth0_response.json");
-const profile_json = require("./fixtures/profile.json");
 
 describe("Given an auth provider", () => {
     let subject:IAuthProvider,
@@ -39,28 +38,6 @@ describe("Given an auth provider", () => {
                 access_token: "at",
                 id_token: "jwt"
             })), TypeMoq.Times.once());
-        });
-    });
-
-    context("when the user profile needs to be retrieved", () => {
-        beforeEach(() => {
-            httpClient.setup(h => h.post("https://test.auth0.com/tokeninfo", TypeMoq.It.isAny())).returns(a => {
-                return Observable.just(new HttpResponse(profile_json, 200)).observeOn(Scheduler.immediate);
-            });
-            settingsManager.setup(settingsManager => settingsManager.getValue("auth_user_data")).returns(a => {
-                return {
-                    "access_token": "at",
-                    "id_token": "jwt"
-                };
-            })
-        });
-        context("and the access token is valid", () => {
-            it("should return the user profile", () => {
-                subject.getProfile();
-                httpClient.verify(httpClient => httpClient.post("https://test.auth0.com/tokeninfo", TypeMoq.It.isValue({
-                    id_token: 'jwt'
-                })), TypeMoq.Times.once());
-            });
         });
     });
 });

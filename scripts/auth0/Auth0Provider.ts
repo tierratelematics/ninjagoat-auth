@@ -6,9 +6,10 @@ import {IHttpClient} from "ninjagoat";
 //Needed cause auth0-lock and doesn't work since document is not found
 const Auth0Lock = typeof document === "undefined" ? null : require("auth0-lock");
 import {ISettingsManager} from "ninjagoat";
+import IAuthDataRetriever from "../interfaces/IAuthDataRetriever";
 
 @injectable()
-class Auth0Provider implements IAuthProvider {
+class Auth0Provider implements IAuthProvider, IAuthDataRetriever {
 
     constructor(@inject("IAuthConfig") private authConfig:IAuthConfig,
                 @inject("IHttpClient") private httpClient:IHttpClient,
@@ -35,12 +36,6 @@ class Auth0Provider implements IAuthProvider {
 
     isLoggedIn():boolean {
         return !!this.getIDToken();
-    }
-
-    getProfile():Observable<any> {
-        return this.httpClient.post(`https://${this.authConfig.clientNamespace}/tokeninfo`, {
-            id_token: this.getIDToken()
-        });
     }
 
     getAccessToken():string {

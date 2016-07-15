@@ -10,11 +10,13 @@ import AuthViewModel from "./auth0/AuthViewModel";
 import {IHttpClient} from "ninjagoat";
 import {HttpClient} from "ninjagoat";
 import AuthHttpClient from "./auth0/AuthHttpClient";
+import IAuthDataRetriever from "./interfaces/IAuthDataRetriever";
 
 class AuthModule implements IModule {
 
     modules:IKernelModule = (kernel:IKernel) => {
         kernel.bind<IAuthProvider>("IAuthProvider").to(Auth0Provider).inSingletonScope();
+        kernel.bind<IAuthDataRetriever>("IAuthDataRetriever").to(Auth0Provider).inSingletonScope();
         kernel.bind<IHashRetriever>("IHashRetriever").to(HashRetriever).inSingletonScope();
         kernel.unbind("IHttpClient");
         kernel.bind<IHttpClient>("HttpClient").to(HttpClient).inSingletonScope().whenInjectedInto(AuthHttpClient);

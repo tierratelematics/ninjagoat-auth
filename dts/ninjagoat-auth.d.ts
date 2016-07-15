@@ -71,6 +71,11 @@ declare module NinjagoatAuth {
 
         dispose():void;
     }
+
+    export interface IAuthDataRetriever {
+        getAccessToken():string;
+        getIDToken():string;
+    }
 }
 
 export = NinjagoatAuth;
