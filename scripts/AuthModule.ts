@@ -6,7 +6,7 @@ import IAuthProvider from "./interfaces/IAuthProvider";
 import Auth0Provider from "./auth0/Auth0Provider";
 import IHashRetriever from "./interfaces/IHashRetriever";
 import HashRetriever from "./HashRetriever";
-import AuthViewModel from "./auth0/AuthViewModel";
+import LoginViewModel from "./auth0/LoginViewModel";
 import {IHttpClient} from "ninjagoat";
 import {HttpClient} from "ninjagoat";
 import AuthHttpClient from "./auth0/AuthHttpClient";
@@ -24,7 +24,7 @@ class AuthModule implements IModule {
     };
 
     register(registry:IViewModelRegistry, serviceLocator?:IServiceLocator, overrides?:any):void {
-        registry.add(AuthViewModel).forArea("Auth");
+        registry.add(LoginViewModel).forArea("Auth");
     }
 }
 

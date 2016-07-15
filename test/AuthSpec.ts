@@ -7,17 +7,19 @@ import IAuthProvider from "../scripts/interfaces/IAuthProvider";
 import {ISettingsManager} from "ninjagoat";
 import {HttpClient} from "ninjagoat";
 import MockSettingsManager from "./fixtures/MockSettingsManager";
-import {HttpResponse} from "ninjagoat";
-import {Observable, Scheduler} from "rx";
+import ILocationNavigator from "../scripts/interfaces/ILocationNavigator";
+import MockLocationNavigator from "./fixtures/MockLocationNavigator";
 const auth0_response = require("./fixtures/auth0_response.json");
 
 describe("Given an auth provider", () => {
     let subject:IAuthProvider,
         httpClient:TypeMoq.Mock<IHttpClient>,
-        settingsManager:TypeMoq.Mock<ISettingsManager>;
+        settingsManager:TypeMoq.Mock<ISettingsManager>,
+        locationNavigator:TypeMoq.Mock<ILocationNavigator>;
 
     beforeEach(() => {
         httpClient = TypeMoq.Mock.ofType(HttpClient);
+        locationNavigator = TypeMoq.Mock.ofType(MockLocationNavigator);
         settingsManager = TypeMoq.Mock.ofType(MockSettingsManager);
         settingsManager.setup(s => s.setValue("auth_user_data", TypeMoq.It.isValue({
             "access_token": "at",
@@ -25,10 +27,11 @@ describe("Given an auth provider", () => {
         })));
         subject = new Auth0Provider({
             clientNamespace: 'test.auth0.com',
-            clientCallbackUrl: '',
-            clientId: '',
-            redirectTo: {area: 'Index'}
-        }, httpClient.object, settingsManager.object);
+            loginCallbackUrl: '',
+            logoutCallbackUrl: 'http://localhost',
+            clientId: 'test',
+            logoutRedirect: {area: 'Index'}, loginRedirect: {area: "Index"}
+        }, httpClient.object, settingsManager.object, locationNavigator.object);
     });
 
     context("when an endpoint is called back with jwt and access token", () => {
@@ -43,14 +46,11 @@ describe("Given an auth provider", () => {
 
     context("when the user logs out", () => {
         beforeEach(() => {
-            settingsManager.setup(settingsManager => settingsManager.setValue("auth_user_data", null));
-            httpClient.setup(httpClient => httpClient.get('https://test.auth0.com/logout')).returns(a => {
-                return Observable.just(new HttpResponse(null, 200));
-            });
+            locationNavigator.setup(locationNavigator => locationNavigator.navigate("https://test.auth0.com/v2/logout?returnTo=http://localhost&clientId=test"));
         });
-        it("should clear the saved authentication data", () => {
-            subject.logout().subscribe(() => null);
-            settingsManager.verify(settingsManager => settingsManager.setValue("auth_user_data", null), TypeMoq.Times.once());
+        it("should redirect to the auth0 logout page", () => {
+            subject.logout();
+            locationNavigator.verify(locationNavigator => locationNavigator.navigate("https://test.auth0.com/v2/logout?returnTo=http://localhost&clientId=test"), TypeMoq.Times.once());
         });
     });
 });

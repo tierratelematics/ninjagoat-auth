@@ -1,6 +1,6 @@
 import expect = require("expect.js");
 import * as TypeMoq from "typemoq";
-import AuthViewModel from "../scripts/auth0/AuthViewModel";
+import LoginViewModel from "../scripts/auth0/LoginViewModel";
 import IHashRetriever from "../scripts/interfaces/IHashRetriever";
 import IAuthProvider from "../scripts/interfaces/IAuthProvider";
 import MockHashRetriever from "./fixtures/MockHashRetriever";
@@ -8,8 +8,8 @@ import Auth0Provider from "../scripts/auth0/Auth0Provider";
 import {INavigationManager} from "ninjagoat";
 import MockNavigationManager from "./fixtures/MockNavigationManager";
 
-describe("Given an auth viewmodel", () => {
-    let subject:AuthViewModel,
+describe("Given a login viewmodel", () => {
+    let subject:LoginViewModel,
         hashRetriever:TypeMoq.Mock<IHashRetriever>,
         authProvider:TypeMoq.Mock<IAuthProvider>,
         navigationManager:TypeMoq.Mock<INavigationManager>;
@@ -21,11 +21,12 @@ describe("Given an auth viewmodel", () => {
         navigationManager.setup(navigationManager => navigationManager.navigate('Index', undefined)).returns(a => null);
         hashRetriever.setup(hashRetriever => hashRetriever.retrieveHash()).returns(a => '#access_token=at&id_token=it&type=bearer');
         authProvider.setup(authProvider => authProvider.callback('at', 'it')).returns(a => null);
-        subject = new AuthViewModel(hashRetriever.object, authProvider.object, {
-            clientNamespace: '',
-            clientCallbackUrl: '',
+        subject = new LoginViewModel(hashRetriever.object, authProvider.object, {
+            clientNamespace: 'test.auth0.com',
+            loginCallbackUrl: '',
+            logoutCallbackUrl: '',
             clientId: '',
-            redirectTo: {area: 'Index'}
+            logoutRedirect: {area: 'Index'}, loginRedirect: {area: "Index"}
         }, navigationManager.object);
     });
 
@@ -33,7 +34,7 @@ describe("Given an auth viewmodel", () => {
         it("should obtain the access token and jwt and save them", () => {
             authProvider.verify(authProvider => authProvider.callback('at', 'it'), TypeMoq.Times.once());
         });
-        it("should redirect to the specified page", () => {
+        it("should redirect to the configured return page", () => {
             navigationManager.verify(navigationManager => navigationManager.navigate('Index', undefined), TypeMoq.Times.once());
         });
     });

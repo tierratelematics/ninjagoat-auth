@@ -32,11 +32,14 @@ declare module NinjagoatAuth {
         }
     }
 
-    export interface IAuthProvider {
+    interface IAuthProvider {
         login();
         callback(accessToken:string, idToken:string);
+        logout();
         isLoggedIn():boolean;
-        getProfile():Observable<any>;
+    }
+
+    export interface IAuthDataRetriever {
         getAccessToken():string;
         getIDToken():string;
     }
@@ -59,7 +62,7 @@ declare module NinjagoatAuth {
         retrieveHash():string;
     }
 
-    export class AuthViewModel implements IViewModel<any> {
+    export class LoginViewModel implements IViewModel<any> {
         "force nominal type for IViewModel":any;
 
         constructor(hashRetriever:IHashRetriever, authProvider:IAuthProvider, authConfig:IAuthConfig, navigationManager:INavigationManager);
@@ -70,11 +73,6 @@ declare module NinjagoatAuth {
 
 
         dispose():void;
-    }
-
-    export interface IAuthDataRetriever {
-        getAccessToken():string;
-        getIDToken():string;
     }
 }
 

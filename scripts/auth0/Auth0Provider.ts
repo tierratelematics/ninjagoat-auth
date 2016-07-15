@@ -7,20 +7,22 @@ import {IHttpClient} from "ninjagoat";
 const Auth0Lock = typeof document === "undefined" ? null : require("auth0-lock");
 import {ISettingsManager} from "ninjagoat";
 import IAuthDataRetriever from "../interfaces/IAuthDataRetriever";
+import ILocationNavigator from "../interfaces/ILocationNavigator";
 
 @injectable()
 class Auth0Provider implements IAuthProvider, IAuthDataRetriever {
 
     constructor(@inject("IAuthConfig") private authConfig:IAuthConfig,
                 @inject("IHttpClient") private httpClient:IHttpClient,
-                @inject("ISettingsManager") private settingsManager:ISettingsManager) {
+                @inject("ISettingsManager") private settingsManager:ISettingsManager,
+                @inject("ILocationNavigator") private locationNavigator:ILocationNavigator) {
 
     }
 
     login() {
         let lock = new Auth0Lock(this.authConfig.clientId, this.authConfig.clientNamespace);
         lock.show({
-            callbackURL: this.authConfig.clientCallbackUrl,
+            callbackURL: this.authConfig.loginCallbackUrl,
             responseType: 'token',
             authParams: {
                 scope: 'openid email'
@@ -34,11 +36,9 @@ class Auth0Provider implements IAuthProvider, IAuthDataRetriever {
         });
     }
 
-    logout():Rx.Observable<void> {
-        return this.httpClient
-            .get(`https://${this.authConfig.clientNamespace}/logout`)
-            .do(() => this.settingsManager.setValue("auth_user_data", null))
-            .map(value => null);
+    logout() {
+        let url = `https://${this.authConfig.clientNamespace}/v2/logout?returnTo=${this.authConfig.logoutCallbackUrl}&clientId=${this.authConfig.clientId}`;
+        this.locationNavigator.navigate(url);
     }
 
     isLoggedIn():boolean {
