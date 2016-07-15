@@ -7,8 +7,8 @@ import {ViewModel} from "ninjagoat";
 import IAuthConfig from "../interfaces/IAuthConfig";
 import {INavigationManager} from "ninjagoat";
 
-@ViewModel("AuthIndex")
-class AuthViewModel implements IViewModel<any> {
+@ViewModel("Login")
+class LoginViewModel implements IViewModel<any> {
     "force nominal type for IViewModel":any;
 
     private subject = new Subject<void>();
@@ -19,7 +19,7 @@ class AuthViewModel implements IViewModel<any> {
                 @inject("IAuthConfig") private authConfig:IAuthConfig,
                 @inject("INavigationManager") private navigationManager:INavigationManager) {
         this.saveCredentials();
-        this.navigationManager.navigate(authConfig.redirectTo.area, authConfig.redirectTo.viewmodelId);
+        this.navigationManager.navigate(authConfig.loginRedirect.area, authConfig.loginRedirect.viewmodelId);
     }
 
     private saveCredentials() {
@@ -52,4 +52,4 @@ function isObserver<T>(observerOrOnNext:(IObserver<T>) | ((value:T) => void)):ob
     return (<IObserver<T>>observerOrOnNext).onNext !== undefined;
 }
 
-export default AuthViewModel
+export default LoginViewModel

@@ -7,29 +7,31 @@ import IAuthProvider from "../scripts/interfaces/IAuthProvider";
 import {ISettingsManager} from "ninjagoat";
 import {HttpClient} from "ninjagoat";
 import MockSettingsManager from "./fixtures/MockSettingsManager";
-import {HttpResponse} from "ninjagoat";
-import {Observable, Scheduler} from "rx";
+import ILocationNavigator from "../scripts/interfaces/ILocationNavigator";
+import MockLocationNavigator from "./fixtures/MockLocationNavigator";
 const auth0_response = require("./fixtures/auth0_response.json");
-const profile_json = require("./fixtures/profile.json");
 
 describe("Given an auth provider", () => {
     let subject:IAuthProvider,
         httpClient:TypeMoq.Mock<IHttpClient>,
-        settingsManager:TypeMoq.Mock<ISettingsManager>;
+        settingsManager:TypeMoq.Mock<ISettingsManager>,
+        locationNavigator:TypeMoq.Mock<ILocationNavigator>;
 
     beforeEach(() => {
         httpClient = TypeMoq.Mock.ofType(HttpClient);
+        locationNavigator = TypeMoq.Mock.ofType(MockLocationNavigator);
         settingsManager = TypeMoq.Mock.ofType(MockSettingsManager);
         settingsManager.setup(s => s.setValue("auth_user_data", TypeMoq.It.isValue({
             "access_token": "at",
             "id_token": "jwt"
-        }))).returns(a => null);
+        })));
         subject = new Auth0Provider({
             clientNamespace: 'test.auth0.com',
-            clientCallbackUrl: '',
-            clientId: '',
-            redirectTo: {area: 'Index'}
-        }, httpClient.object, settingsManager.object);
+            loginCallbackUrl: '',
+            logoutCallbackUrl: 'http://localhost',
+            clientId: 'test',
+            logoutRedirect: {area: 'Index'}, loginRedirect: {area: "Index"}
+        }, httpClient.object, settingsManager.object, locationNavigator.object);
     });
 
     context("when an endpoint is called back with jwt and access token", () => {
@@ -42,25 +44,13 @@ describe("Given an auth provider", () => {
         });
     });
 
-    context("when the user profile needs to be retrieved", () => {
+    context("when the user logs out", () => {
         beforeEach(() => {
-            httpClient.setup(h => h.post("https://test.auth0.com/tokeninfo", TypeMoq.It.isAny())).returns(a => {
-                return Observable.just(new HttpResponse(profile_json, 200)).observeOn(Scheduler.immediate);
-            });
-            settingsManager.setup(settingsManager => settingsManager.getValue("auth_user_data")).returns(a => {
-                return {
-                    "access_token": "at",
-                    "id_token": "jwt"
-                };
-            })
+            locationNavigator.setup(locationNavigator => locationNavigator.navigate("https://test.auth0.com/v2/logout?returnTo=http://localhost&client_id=test"));
         });
-        context("and the access token is valid", () => {
-            it("should return the user profile", () => {
-                subject.getProfile();
-                httpClient.verify(httpClient => httpClient.post("https://test.auth0.com/tokeninfo", TypeMoq.It.isValue({
-                    id_token: 'jwt'
-                })), TypeMoq.Times.once());
-            });
+        it("should redirect to the auth0 logout page", () => {
+            subject.logout();
+            locationNavigator.verify(locationNavigator => locationNavigator.navigate("https://test.auth0.com/v2/logout?returnTo=http://localhost&client_id=test"), TypeMoq.Times.once());
         });
     });
 });

@@ -6,20 +6,23 @@ import {IHttpClient} from "ninjagoat";
 //Needed cause auth0-lock and doesn't work since document is not found
 const Auth0Lock = typeof document === "undefined" ? null : require("auth0-lock");
 import {ISettingsManager} from "ninjagoat";
+import IAuthDataRetriever from "../interfaces/IAuthDataRetriever";
+import ILocationNavigator from "../interfaces/ILocationNavigator";
 
 @injectable()
-class Auth0Provider implements IAuthProvider {
+class Auth0Provider implements IAuthProvider, IAuthDataRetriever {
 
     constructor(@inject("IAuthConfig") private authConfig:IAuthConfig,
                 @inject("IHttpClient") private httpClient:IHttpClient,
-                @inject("ISettingsManager") private settingsManager:ISettingsManager) {
+                @inject("ISettingsManager") private settingsManager:ISettingsManager,
+                @inject("ILocationNavigator") private locationNavigator:ILocationNavigator) {
 
     }
 
     login() {
         let lock = new Auth0Lock(this.authConfig.clientId, this.authConfig.clientNamespace);
         lock.show({
-            callbackURL: this.authConfig.clientCallbackUrl,
+            callbackURL: this.authConfig.loginCallbackUrl,
             responseType: 'token',
             authParams: {
                 scope: 'openid email'
@@ -33,14 +36,13 @@ class Auth0Provider implements IAuthProvider {
         });
     }
 
-    isLoggedIn():boolean {
-        return !!this.getIDToken();
+    logout() {
+        let url = `https://${this.authConfig.clientNamespace}/v2/logout?returnTo=${this.authConfig.logoutCallbackUrl}&client_id=${this.authConfig.clientId}`;
+        this.locationNavigator.navigate(url);
     }
 
-    getProfile():Observable<any> {
-        return this.httpClient.post(`https://${this.authConfig.clientNamespace}/tokeninfo`, {
-            id_token: this.getIDToken()
-        });
+    isLoggedIn():boolean {
+        return !!this.getIDToken();
     }
 
     getAccessToken():string {
