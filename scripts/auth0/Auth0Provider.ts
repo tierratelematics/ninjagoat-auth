@@ -34,6 +34,13 @@ class Auth0Provider implements IAuthProvider, IAuthDataRetriever {
         });
     }
 
+    logout():Rx.Observable<void> {
+        return this.httpClient
+            .get(`https://${this.authConfig.clientNamespace}/logout`)
+            .do(() => this.settingsManager.setValue("auth_user_data", null))
+            .map(value => null);
+    }
+
     isLoggedIn():boolean {
         return !!this.getIDToken();
     }

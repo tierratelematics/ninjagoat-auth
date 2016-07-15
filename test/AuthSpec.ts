@@ -22,7 +22,7 @@ describe("Given an auth provider", () => {
         settingsManager.setup(s => s.setValue("auth_user_data", TypeMoq.It.isValue({
             "access_token": "at",
             "id_token": "jwt"
-        }))).returns(a => null);
+        })));
         subject = new Auth0Provider({
             clientNamespace: 'test.auth0.com',
             clientCallbackUrl: '',
@@ -38,6 +38,19 @@ describe("Given an auth provider", () => {
                 access_token: "at",
                 id_token: "jwt"
             })), TypeMoq.Times.once());
+        });
+    });
+
+    context("when the user logs out", () => {
+        beforeEach(() => {
+            settingsManager.setup(settingsManager => settingsManager.setValue("auth_user_data", null));
+            httpClient.setup(httpClient => httpClient.get('https://test.auth0.com/logout')).returns(a => {
+                return Observable.just(new HttpResponse(null, 200));
+            });
+        });
+        it("should clear the saved authentication data", () => {
+            subject.logout().subscribe(() => null);
+            settingsManager.verify(settingsManager => settingsManager.setValue("auth_user_data", null), TypeMoq.Times.once());
         });
     });
 });
