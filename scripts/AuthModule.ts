@@ -1,5 +1,5 @@
 import {IModule} from "ninjagoat";
-import {IKernel, IKernelModule} from "inversify";
+import {interfaces} from "inversify";
 import {IViewModelRegistry} from "ninjagoat";
 import {IServiceLocator} from "ninjagoat";
 import IAuthProvider from "./interfaces/IAuthProvider";
@@ -17,7 +17,7 @@ import LocationNavigator from "./LocationNavigator";
 
 class AuthModule implements IModule {
 
-    modules:IKernelModule = (kernel:IKernel) => {
+    modules = (kernel:interfaces.Kernel) => {
         kernel.bind<IAuthProvider>("IAuthProvider").to(Auth0Provider).inSingletonScope();
         kernel.bind<IAuthDataRetriever>("IAuthDataRetriever").to(Auth0Provider).inSingletonScope();
         kernel.bind<IHashRetriever>("IHashRetriever").to(HashRetriever).inSingletonScope();
