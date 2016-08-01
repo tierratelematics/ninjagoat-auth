@@ -4,7 +4,7 @@ import {Observable} from "rx";
 import IAuthConfig from "../interfaces/IAuthConfig";
 import {IHttpClient} from "ninjagoat";
 //Needed cause auth0-lock and doesn't work since document is not found
-const Auth0Lock = typeof document === "undefined" ? null : require("auth0-lock");
+const Auth0Lock = typeof document === "undefined" ? null : require("auth0-lock").default;
 import {ISettingsManager} from "ninjagoat";
 import IAuthDataRetriever from "../interfaces/IAuthDataRetriever";
 import ILocationNavigator from "../interfaces/ILocationNavigator";
@@ -20,14 +20,16 @@ class Auth0Provider implements IAuthProvider, IAuthDataRetriever {
     }
 
     login() {
-        let lock = new Auth0Lock(this.authConfig.clientId, this.authConfig.clientNamespace);
-        lock.show({
-            callbackURL: this.authConfig.loginCallbackUrl,
-            responseType: 'token',
-            authParams: {
-                scope: 'openid email'
+        let lock = new Auth0Lock(this.authConfig.clientId, this.authConfig.clientNamespace, {
+            auth: {
+                redirectUrl: this.authConfig.loginCallbackUrl,
+                responseType: 'token',
+                authParams: {
+                    scope: 'openid email'
+                }
             }
         });
+        lock.show();
     }
 
     callback(accessToken:string, idToken:string) {
