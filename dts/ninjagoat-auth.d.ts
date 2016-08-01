@@ -34,9 +34,8 @@ declare module NinjagoatAuth {
         }
     }
 
-    interface IAuthProvider {
-        login();
-        callback(accessToken:string, idToken:string);
+    export interface IAuthProvider {
+        login(username:string, password:string);
         logout();
         isLoggedIn():boolean;
     }
@@ -44,6 +43,7 @@ declare module NinjagoatAuth {
     export interface IAuthDataRetriever {
         getAccessToken():string;
         getIDToken():string;
+        getProfile():any;
     }
 
     export class AuthHttpClient implements IHttpClient {
@@ -58,10 +58,6 @@ declare module NinjagoatAuth {
 
         delete(url:string, headers?:Dictionary<string>):Rx.Observable<HttpResponse>;
 
-    }
-
-    export interface IHashRetriever {
-        retrieveHash():string;
     }
 }
 

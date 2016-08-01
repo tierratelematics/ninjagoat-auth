@@ -1,6 +1,5 @@
 interface IAuthProvider {
-    login();
-    callback(accessToken:string, idToken:string);
+    login(username:string, password:string);
     logout();
     isLoggedIn():boolean;
 }
