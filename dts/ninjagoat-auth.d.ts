@@ -45,7 +45,6 @@ declare module NinjagoatAuth {
     export interface IAuthDataRetriever {
         getAccessToken():string;
         getIDToken():string;
-        getProfile():any;
     }
 
     export class AuthHttpClient implements IHttpClient {
