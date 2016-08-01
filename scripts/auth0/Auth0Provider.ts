@@ -29,11 +29,10 @@ class Auth0Provider implements IAuthProvider, IAuthDataRetriever {
                 connection: 'Username-Password-Authentication',
                 username: username,
                 password: password
-            }, (error, profile, idToken, accessToken) => {
+            }, (error, data) => {
                 if (error) return reject(error);
-                this.settingsManager.setValue("auth_id_token", idToken);
-                this.settingsManager.setValue("auth_access_token", accessToken);
-                this.settingsManager.setValue("auth_profile", profile);
+                this.settingsManager.setValue("auth_id_token", data.idToken);
+                this.settingsManager.setValue("auth_access_token", data.accessToken);
                 resolve();
             });
         });
