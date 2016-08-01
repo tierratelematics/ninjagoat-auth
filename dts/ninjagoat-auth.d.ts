@@ -8,7 +8,7 @@ import {IHttpClient} from "ninjagoat";
 import {ISettingsManager} from "ninjagoat";
 import {Dictionary} from "ninjagoat";
 import {HttpResponse} from "ninjagoat";
-
+import * as Promise from "bluebird";
 
 declare module NinjagoatAuth {
 
@@ -22,22 +22,18 @@ declare module NinjagoatAuth {
     export interface IAuthConfig {
         clientId:string;
         clientNamespace:string;
-        loginCallbackUrl:string;
         logoutCallbackUrl:string;
-        loginRedirect:{
-            area:string;
-            viewmodelId?:string;
-        },
         logoutRedirect:{
             area:string;
             viewmodelId?:string;
         }
     }
 
-    interface IAuthProvider {
-        login();
-        callback(accessToken:string, idToken:string);
-        logout();
+    export interface IAuthProvider {
+        login(username:string, password:string):Promise<void>;
+        signup(username:string, password:string):Promise<void>;
+        changePassword(username:string):Promise<void>;
+        logout():Promise<void>;
         isLoggedIn():boolean;
     }
 
@@ -58,10 +54,6 @@ declare module NinjagoatAuth {
 
         delete(url:string, headers?:Dictionary<string>):Rx.Observable<HttpResponse>;
 
-    }
-
-    export interface IHashRetriever {
-        retrieveHash():string;
     }
 }
 

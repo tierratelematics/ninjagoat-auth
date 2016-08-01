@@ -7,7 +7,6 @@ import {IHttpClient} from "ninjagoat";
 import MockHttpClient from "./fixtures/MockHttpClient";
 import It = TypeMoqIntern.It;
 import {Dictionary} from "ninjagoat";
-const auth0_response = require("./fixtures/auth0_response.json");
 
 describe("Given an http client", () => {
     let subject:AuthHttpClient,
@@ -23,17 +22,17 @@ describe("Given an http client", () => {
     });
 
     context("when the user data are stored in the browser", () => {
-        beforeEach(() => settingsManager.setup(settingsManager => settingsManager.getValue("auth_user_data")).returns(a => auth0_response));
+        beforeEach(() => settingsManager.setup(settingsManager => settingsManager.getValue("auth_id_token")).returns(a => "jwt"));
         it("should authorize an http call using those data", () => {
             subject.get("/test");
-            decoratedHttpClient.verify(decoratedHttpClient => decoratedHttpClient.get('/test',  TypeMoq.It.isValue(<Dictionary<string>>{
+            decoratedHttpClient.verify(decoratedHttpClient => decoratedHttpClient.get('/test', TypeMoq.It.isValue(<Dictionary<string>>{
                 'Authorization': "Bearer jwt"
             })), TypeMoq.Times.once());
         });
     });
 
     context("when there are no user data stored in the browser", () => {
-        beforeEach(() => settingsManager.setup(settingsManager => settingsManager.getValue("auth_user_data")).returns(a => null));
+        beforeEach(() => settingsManager.setup(settingsManager => settingsManager.getValue("auth_id_token")).returns(a => null));
         it("should not authorize an http call", () => {
             subject.get("/test");
             decoratedHttpClient.verify(decoratedHttpClient => decoratedHttpClient.get('/test', TypeMoq.It.isValue(<Dictionary<string>>{

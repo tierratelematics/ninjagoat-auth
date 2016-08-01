@@ -1,8 +1,8 @@
 {
     "name": "ninjagoat-auth",
-    "version": "0.3.0",
+    "version": "0.4.0",
     "dependencies": {
-        "auth0-lock": "^9.2.1",
+        "auth0-js": "^7.0.3",
         "bluebird": "^3.4.0",
         "inversify": "~2.0.0-rc.1",
         "inversify-dts": "~1.4.0",
