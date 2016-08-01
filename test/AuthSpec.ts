@@ -31,6 +31,31 @@ describe("Given an auth provider", () => {
         }, settingsManager.object, locationNavigator.object);
     });
 
+    context("when the user wants to log in", () => {
+        context("and some credentials are not provided", () => {
+            it("should throw an error", (done) => {
+                subject.login(null, "foo").catch(error => done());
+            });
+        });
+    });
+
+    context("when the user wants to signup", () => {
+        context("and some credentials are not provided", () => {
+            it("should throw an error", (done) => {
+                subject.signup(null, "foo").catch(error => done());
+            });
+        });
+    });
+
+    context("when the user wants to retrieve the password", () => {
+        context("and some credentials are not provided", () => {
+            it("should throw an error", (done) => {
+                subject.changePassword(null).catch(error => done());
+            });
+        });
+    });
+
+
     context("when the user logs out", () => {
         beforeEach(() => {
             locationNavigator.setup(locationNavigator => locationNavigator.navigate("https://test.auth0.com/v2/logout?returnTo=http://localhost&client_id=test"));

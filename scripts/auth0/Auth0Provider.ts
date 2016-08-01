@@ -24,6 +24,7 @@ class Auth0Provider implements IAuthProvider, IAuthDataRetriever {
 
     login(username:string, password:string):Promise<void> {
         return new Promise<void>((resolve, reject)=> {
+            if (!username || !password) return reject(new Error("Some credentials are missing"));
             this.auth.signin({
                 connection: 'Username-Password-Authentication',
                 username: username,
@@ -40,6 +41,7 @@ class Auth0Provider implements IAuthProvider, IAuthDataRetriever {
 
     signup(username:string, password:string):Promise<void> {
         return new Promise<void>((resolve, reject) => {
+            if (!username || !password) return reject(new Error("Some credentials are missing"));
             this.auth.signup({
                 connection: 'Username-Password-Authentication',
                 username: username,
@@ -53,6 +55,7 @@ class Auth0Provider implements IAuthProvider, IAuthDataRetriever {
 
     changePassword(username:string):Promise<void> {
         return new Promise<void>((resolve, reject) => {
+            if (!username) return reject(new Error("Some credentials are missing"));
             this.auth.changePassword({
                 connection: 'Username-Password-Authentication',
                 username: username
