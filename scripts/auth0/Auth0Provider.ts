@@ -5,6 +5,7 @@ const Auth0 = require("auth0-js");
 import {ISettingsManager} from "ninjagoat";
 import IAuthDataRetriever from "../interfaces/IAuthDataRetriever";
 import ILocationNavigator from "../interfaces/ILocationNavigator";
+import * as Promise from "bluebird";
 
 @injectable()
 class Auth0Provider implements IAuthProvider, IAuthDataRetriever {
@@ -15,26 +16,30 @@ class Auth0Provider implements IAuthProvider, IAuthDataRetriever {
 
     }
 
-    login(username:string, password:string) {
+    login(username:string, password:string):Promise<void> {
         let auth = new Auth0({
             domain: this.authConfig.clientNamespace,
             clientID: this.authConfig.clientId
         });
-        auth.signin({
-            connection: 'Username-Password-Authentication',
-            username: username,
-            password: password
-        }, (error, profile, idToken, accessToken) => {
-            if (error)return;
-            this.settingsManager.setValue("auth_id_token", idToken);
-            this.settingsManager.setValue("auth_access_token", accessToken);
-            this.settingsManager.setValue("auth_profile", profile);
+        return new Promise<void>((resolve, reject)=> {
+            auth.signin({
+                connection: 'Username-Password-Authentication',
+                username: username,
+                password: password
+            }, (error, profile, idToken, accessToken) => {
+                if (error) return reject(error);
+                this.settingsManager.setValue("auth_id_token", idToken);
+                this.settingsManager.setValue("auth_access_token", accessToken);
+                this.settingsManager.setValue("auth_profile", profile);
+                resolve();
+            });
         });
     }
 
-    logout() {
+    logout():Promise<void> {
         let url = `https://${this.authConfig.clientNamespace}/v2/logout?returnTo=${this.authConfig.logoutCallbackUrl}&client_id=${this.authConfig.clientId}`;
         this.locationNavigator.navigate(url);
+        return Promise.resolve();
     }
 
     isLoggedIn():boolean {

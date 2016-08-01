@@ -8,7 +8,7 @@ import {IHttpClient} from "ninjagoat";
 import {ISettingsManager} from "ninjagoat";
 import {Dictionary} from "ninjagoat";
 import {HttpResponse} from "ninjagoat";
-
+import * as Promise from "bluebird";
 
 declare module NinjagoatAuth {
 
@@ -35,8 +35,8 @@ declare module NinjagoatAuth {
     }
 
     export interface IAuthProvider {
-        login(username:string, password:string);
-        logout();
+        login(username:string, password:string):Promise<void>;
+        logout():Promise<void>;
         isLoggedIn():boolean;
     }
 

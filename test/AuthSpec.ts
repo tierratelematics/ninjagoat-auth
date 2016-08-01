@@ -13,12 +13,10 @@ const auth0_response = require("./fixtures/auth0_response.json");
 
 describe("Given an auth provider", () => {
     let subject:IAuthProvider,
-        httpClient:TypeMoq.Mock<IHttpClient>,
         settingsManager:TypeMoq.Mock<ISettingsManager>,
         locationNavigator:TypeMoq.Mock<ILocationNavigator>;
 
     beforeEach(() => {
-        httpClient = TypeMoq.Mock.ofType(HttpClient);
         locationNavigator = TypeMoq.Mock.ofType(MockLocationNavigator);
         settingsManager = TypeMoq.Mock.ofType(MockSettingsManager);
         settingsManager.setup(s => s.setValue("auth_user_data", TypeMoq.It.isValue({
@@ -31,17 +29,7 @@ describe("Given an auth provider", () => {
             logoutCallbackUrl: 'http://localhost',
             clientId: 'test',
             logoutRedirect: {area: 'Index'}, loginRedirect: {area: "Index"}
-        }, httpClient.object, settingsManager.object, locationNavigator.object);
-    });
-
-    context("when an endpoint is called back with jwt and access token", () => {
-        beforeEach(() => subject.callback("at", "jwt"));
-        it("should save the return data in the browser", () => {
-            settingsManager.verify(s => s.setValue("auth_user_data", TypeMoq.It.isValue({
-                access_token: "at",
-                id_token: "jwt"
-            })), TypeMoq.Times.once());
-        });
+        }, settingsManager.object, locationNavigator.object);
     });
 
     context("when the user logs out", () => {

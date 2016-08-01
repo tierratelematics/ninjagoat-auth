@@ -3,7 +3,7 @@
         "ninjagoat": "npm:ninjagoat/dts/ninjagoat.d.ts"
     },
     "globalDependencies": {
-        "bluebird": "registry:dt/bluebird#2.0.0+20160319051630",
+        "bluebird": "registry:dt/bluebird#2.0.0+20160701023356",
         "inversify-dts": "npm:inversify-dts/inversify/inversify.d.ts",
         "lodash": "registry:dt/lodash#3.10.0+20160330154726",
         "node": "registry:dt/node#4.0.0+20160505172921",
