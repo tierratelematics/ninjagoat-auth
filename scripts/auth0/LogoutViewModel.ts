@@ -16,7 +16,9 @@ class LogoutViewModel implements IViewModel<any> {
     constructor(@inject("ISettingsManager") private settingsManager:ISettingsManager,
                 @inject("IAuthConfig") private authConfig:IAuthConfig,
                 @inject("INavigationManager") private navigationManager:INavigationManager) {
-        this.settingsManager.setValue("auth_user_data", null);
+        this.settingsManager.setValue("auth_id_token", null);
+        this.settingsManager.setValue("auth_access_token", null);
+        this.settingsManager.setValue("auth_profile", null);
         this.navigationManager.navigate(authConfig.logoutRedirect.area, authConfig.logoutRedirect.viewmodelId);
     }
 

@@ -13,12 +13,10 @@ const auth0_response = require("./fixtures/auth0_response.json");
 
 describe("Given an auth provider", () => {
     let subject:IAuthProvider,
-        httpClient:TypeMoq.Mock<IHttpClient>,
         settingsManager:TypeMoq.Mock<ISettingsManager>,
         locationNavigator:TypeMoq.Mock<ILocationNavigator>;
 
     beforeEach(() => {
-        httpClient = TypeMoq.Mock.ofType(HttpClient);
         locationNavigator = TypeMoq.Mock.ofType(MockLocationNavigator);
         settingsManager = TypeMoq.Mock.ofType(MockSettingsManager);
         settingsManager.setup(s => s.setValue("auth_user_data", TypeMoq.It.isValue({
@@ -27,22 +25,36 @@ describe("Given an auth provider", () => {
         })));
         subject = new Auth0Provider({
             clientNamespace: 'test.auth0.com',
-            loginCallbackUrl: '',
             logoutCallbackUrl: 'http://localhost',
             clientId: 'test',
-            logoutRedirect: {area: 'Index'}, loginRedirect: {area: "Index"}
-        }, httpClient.object, settingsManager.object, locationNavigator.object);
+            logoutRedirect: {area: 'Index'}
+        }, settingsManager.object, locationNavigator.object);
     });
 
-    context("when an endpoint is called back with jwt and access token", () => {
-        beforeEach(() => subject.callback("at", "jwt"));
-        it("should save the return data in the browser", () => {
-            settingsManager.verify(s => s.setValue("auth_user_data", TypeMoq.It.isValue({
-                access_token: "at",
-                id_token: "jwt"
-            })), TypeMoq.Times.once());
+    context("when the user wants to log in", () => {
+        context("and some credentials are not provided", () => {
+            it("should throw an error", (done) => {
+                subject.login(null, "foo").catch(error => done());
+            });
         });
     });
+
+    context("when the user wants to signup", () => {
+        context("and some credentials are not provided", () => {
+            it("should throw an error", (done) => {
+                subject.signup(null, "foo").catch(error => done());
+            });
+        });
+    });
+
+    context("when the user wants to retrieve the password", () => {
+        context("and some credentials are not provided", () => {
+            it("should throw an error", (done) => {
+                subject.changePassword(null).catch(error => done());
+            });
+        });
+    });
+
 
     context("when the user logs out", () => {
         beforeEach(() => {
