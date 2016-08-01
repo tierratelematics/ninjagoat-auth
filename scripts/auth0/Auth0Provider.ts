@@ -43,7 +43,19 @@ class Auth0Provider implements IAuthProvider, IAuthDataRetriever {
                 connection: 'Username-Password-Authentication',
                 username: username,
                 password: password
-            }, function (err) {
+            }, function (error) {
+                if (error) return reject(error);
+                resolve();
+            });
+        });
+    }
+
+    changePassword(username:string):Promise<void> {
+        return new Promise<void>((resolve, reject) => {
+            this.auth.changePassword({
+                connection: 'Username-Password-Authentication',
+                username: username
+            }, function (error) {
                 if (error) return reject(error);
                 resolve();
             });
