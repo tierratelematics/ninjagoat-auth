@@ -10,19 +10,20 @@ import * as Promise from "bluebird";
 @injectable()
 class Auth0Provider implements IAuthProvider, IAuthDataRetriever {
 
+    auth:any;
+
     constructor(@inject("IAuthConfig") private authConfig:IAuthConfig,
                 @inject("ISettingsManager") private settingsManager:ISettingsManager,
                 @inject("ILocationNavigator") private locationNavigator:ILocationNavigator) {
-
-    }
-
-    login(username:string, password:string):Promise<void> {
-        let auth = new Auth0({
+        this.auth = new Auth0({
             domain: this.authConfig.clientNamespace,
             clientID: this.authConfig.clientId
         });
+    }
+
+    login(username:string, password:string):Promise<void> {
         return new Promise<void>((resolve, reject)=> {
-            auth.signin({
+            this.auth.signin({
                 connection: 'Username-Password-Authentication',
                 username: username,
                 password: password
@@ -31,6 +32,19 @@ class Auth0Provider implements IAuthProvider, IAuthDataRetriever {
                 this.settingsManager.setValue("auth_id_token", idToken);
                 this.settingsManager.setValue("auth_access_token", accessToken);
                 this.settingsManager.setValue("auth_profile", profile);
+                resolve();
+            });
+        });
+    }
+
+    signup(username:string, password:string):Promise<void> {
+        return new Promise<void>((resolve, reject) => {
+            this.auth.signup({
+                connection: 'Username-Password-Authentication',
+                username: username,
+                password: password
+            }, function (err) {
+                if (error) return reject(error);
                 resolve();
             });
         });
