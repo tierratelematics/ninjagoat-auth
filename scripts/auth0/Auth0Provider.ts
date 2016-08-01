@@ -57,7 +57,7 @@ class Auth0Provider implements IAuthProvider, IAuthDataRetriever {
             if (!username) return reject(new Error("Some credentials are missing"));
             this.auth.changePassword({
                 connection: 'Username-Password-Authentication',
-                username: username
+                email: username
             }, function (error) {
                 if (error) return reject(error);
                 resolve();
