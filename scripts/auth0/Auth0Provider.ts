@@ -1,7 +1,7 @@
 import IAuthProvider from "../interfaces/IAuthProvider";
 import {injectable, inject} from "inversify";
 import IAuthConfig from "../interfaces/IAuthConfig";
-const Auth0 = require("auth0-js");
+const Auth0 = typeof  document === "undefined" ? null : require("auth0-js");
 import {ISettingsManager} from "ninjagoat";
 import IAuthDataRetriever from "../interfaces/IAuthDataRetriever";
 import ILocationNavigator from "../interfaces/ILocationNavigator";
@@ -15,10 +15,11 @@ class Auth0Provider implements IAuthProvider, IAuthDataRetriever {
     constructor(@inject("IAuthConfig") private authConfig:IAuthConfig,
                 @inject("ISettingsManager") private settingsManager:ISettingsManager,
                 @inject("ILocationNavigator") private locationNavigator:ILocationNavigator) {
-        this.auth = new Auth0({
-            domain: this.authConfig.clientNamespace,
-            clientID: this.authConfig.clientId
-        });
+        if (Auth0)
+            this.auth = new Auth0({
+                domain: this.authConfig.clientNamespace,
+                clientID: this.authConfig.clientId
+            });
     }
 
     login(username:string, password:string):Promise<void> {

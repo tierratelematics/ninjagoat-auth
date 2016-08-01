@@ -25,10 +25,9 @@ describe("Given an auth provider", () => {
         })));
         subject = new Auth0Provider({
             clientNamespace: 'test.auth0.com',
-            loginCallbackUrl: '',
             logoutCallbackUrl: 'http://localhost',
             clientId: 'test',
-            logoutRedirect: {area: 'Index'}, loginRedirect: {area: "Index"}
+            logoutRedirect: {area: 'Index'}
         }, settingsManager.object, locationNavigator.object);
     });
 

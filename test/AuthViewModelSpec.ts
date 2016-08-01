@@ -1,10 +1,5 @@
 import expect = require("expect.js");
 import * as TypeMoq from "typemoq";
-import LoginViewModel from "../scripts/auth0/LoginViewModel";
-import IHashRetriever from "../scripts/interfaces/IHashRetriever";
-import IAuthProvider from "../scripts/interfaces/IAuthProvider";
-import MockHashRetriever from "./fixtures/MockHashRetriever";
-import Auth0Provider from "../scripts/auth0/Auth0Provider";
 import {INavigationManager} from "ninjagoat";
 import MockNavigationManager from "./fixtures/MockNavigationManager";
 import LogoutViewModel from "../scripts/auth0/LogoutViewModel";
@@ -23,16 +18,17 @@ describe("Given a logout viewmodel", () => {
         navigationManager.setup(navigationManager => navigationManager.navigate('Login', undefined));
         subject = new LogoutViewModel(settingsManager.object, {
             clientNamespace: 'test.auth0.com',
-            loginCallbackUrl: '',
             logoutCallbackUrl: '',
             clientId: '',
-            logoutRedirect: {area: 'Login'}, loginRedirect: {area: "Index"}
+            logoutRedirect: {area: 'Login'}
         }, navigationManager.object);
     });
 
     context("when it's triggered", () => {
         it("should clear the saved access token and jwt", () => {
-            settingsManager.verify(settingsManager => settingsManager.setValue("auth_user_data", null), TypeMoq.Times.once());
+            settingsManager.verify(settingsManager => settingsManager.setValue("auth_id_token", null), TypeMoq.Times.once());
+            settingsManager.verify(settingsManager => settingsManager.setValue("auth_access_token", null), TypeMoq.Times.once());
+            settingsManager.verify(settingsManager => settingsManager.setValue("auth_profile", null), TypeMoq.Times.once());
         });
 
         it("should redirect the user to the configured return page", () => {
