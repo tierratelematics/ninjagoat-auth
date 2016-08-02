@@ -65,6 +65,15 @@ class Auth0Provider implements IAuthProvider, IAuthDataRetriever {
         });
     }
 
+    requestProfile():Promise<any> {
+        return new Promise<any>((resolve, reject) => {
+            this.auth.getProfile(this.getIDToken(), (error, profile) => {
+                if (error) return reject(error);
+                resolve(profile);
+            });
+        });
+    }
+
     logout():Promise<void> {
         let url = `https://${this.authConfig.clientNamespace}/v2/logout?returnTo=${this.authConfig.logoutCallbackUrl}&client_id=${this.authConfig.clientId}`;
         this.locationNavigator.navigate(url);
