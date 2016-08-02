@@ -9,7 +9,6 @@ import {HttpClient} from "ninjagoat";
 import MockSettingsManager from "./fixtures/MockSettingsManager";
 import ILocationNavigator from "../scripts/interfaces/ILocationNavigator";
 import MockLocationNavigator from "./fixtures/MockLocationNavigator";
-const auth0_response = require("./fixtures/auth0_response.json");
 
 describe("Given an auth provider", () => {
     let subject:IAuthProvider,
