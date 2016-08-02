@@ -23,7 +23,7 @@ class Auth0Provider implements IAuthProvider, IAuthDataRetriever {
     }
 
     login(username:string, password:string):Promise<void> {
-        return new Promise<void>((resolve, reject)=> {
+        return new Promise<any>((resolve, reject)=> {
             if (!username || !password) return reject(new Error("Some credentials are missing"));
             this.auth.signin({
                 connection: 'Username-Password-Authentication',
@@ -35,7 +35,7 @@ class Auth0Provider implements IAuthProvider, IAuthDataRetriever {
                 this.settingsManager.setValue("auth_access_token", data.accessToken);
                 resolve();
             });
-        });
+        }).then(() => this.requestProfile());
     }
 
     signup(username:string, password:string):Promise<void> {

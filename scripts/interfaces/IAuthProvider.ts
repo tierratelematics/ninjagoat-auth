@@ -1,7 +1,7 @@
 import * as Promise from "bluebird";
 
 interface IAuthProvider {
-    login(username:string, password:string):Promise<void>;
+    login(username:string, password:string):Promise<any>;
     signup(username:string, password:string):Promise<void>;
     changePassword(username:string):Promise<void>;
     requestProfile():Promise<any>;
