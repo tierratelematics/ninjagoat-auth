@@ -56,6 +56,8 @@ declare module NinjagoatAuth {
         delete(url:string, headers?:Dictionary<string>):Rx.Observable<HttpResponse>;
 
     }
+
+    export function Authorized();
 }
 
 export = NinjagoatAuth;
