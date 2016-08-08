@@ -19,7 +19,7 @@ class LogoutViewModel implements IViewModel<any> {
         this.settingsManager.setValue("auth_id_token", null);
         this.settingsManager.setValue("auth_access_token", null);
         this.settingsManager.setValue("auth_profile", null);
-        this.navigationManager.navigate(authConfig.logoutRedirect.area, authConfig.logoutRedirect.viewmodelId);
+        this.navigationManager.navigate(authConfig.notAuthorizedRedirect.area, authConfig.notAuthorizedRedirect.viewmodelId);
     }
 
     subscribe(observer:IObserver<void>):IDisposable

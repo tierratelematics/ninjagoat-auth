@@ -26,7 +26,7 @@ describe("Given an auth provider", () => {
             clientNamespace: 'test.auth0.com',
             logoutCallbackUrl: 'http://localhost',
             clientId: 'test',
-            logoutRedirect: {area: 'Index'}
+            notAuthorizedRedirect: {area: 'Index'}
         }, settingsManager.object, locationNavigator.object);
     });
 
