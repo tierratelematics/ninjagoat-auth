@@ -20,9 +20,15 @@ class AuthorizedRoutingAdapter implements IRoutingAdapter {
     }
 
     routes():PlainRoute {
-        let areas = this.registry.getAreas();
+        let areas = this.registry.getAreas(),
+            routes = this.getRoutes(areas);
+        if (this.registry.getArea("NotFound")) //If there's a 404 handler
+            routes.push({
+                path: "*",
+                component: this.componentFactory.componentForNotFound()
+            });
         return {
-            childRoutes: this.getRoutes(areas),
+            childRoutes: routes,
             component: this.componentFactory.componentForMaster(),
             indexRoute: {component: this.componentFactory.componentForUri("/")},
             path: "/",
@@ -35,7 +41,7 @@ class AuthorizedRoutingAdapter implements IRoutingAdapter {
 
     private getRoutes(areas:AreaRegistry[]):PlainRoute[] {
         return <PlainRoute[]>_(areas)
-            .filter(area => !_.includes(["Index", "Master"], area.area))
+            .filter(area => !_.includes(["Index", "Master", "NotFound"], area.area))
             .reduce((routes, area) => {
                 routes.push(this.getRoutesForArea(area));
                 return _.flatten(routes);
