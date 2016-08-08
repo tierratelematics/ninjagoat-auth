@@ -23,7 +23,7 @@ declare module NinjagoatAuth {
         clientId:string;
         clientNamespace:string;
         logoutCallbackUrl:string;
-        logoutRedirect:{
+        notAuthorizedRedirect:{
             area:string;
             viewmodelId?:string;
         }
@@ -56,6 +56,8 @@ declare module NinjagoatAuth {
         delete(url:string, headers?:Dictionary<string>):Rx.Observable<HttpResponse>;
 
     }
+
+    export function Authorized();
 }
 
 export = NinjagoatAuth;

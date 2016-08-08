@@ -2,7 +2,7 @@ interface IAuthConfig {
     clientId:string;
     clientNamespace:string;
     logoutCallbackUrl:string;
-    logoutRedirect:{
+    notAuthorizedRedirect:{
         area:string;
         viewmodelId?:string;
     }
