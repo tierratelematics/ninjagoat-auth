@@ -5,7 +5,8 @@ interface IAuthConfig {
     notAuthorizedRedirect:{
         area:string;
         viewmodelId?:string;
-    }
+    },
+    connection:string;
 }
 
 export default IAuthConfig
