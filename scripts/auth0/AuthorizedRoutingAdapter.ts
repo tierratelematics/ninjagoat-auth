@@ -9,6 +9,7 @@ import IAuthConfig from "../interfaces/IAuthConfig";
 import IAuthProvider from "../interfaces/IAuthProvider";
 import {RegistryEntry} from "ninjagoat";
 import {INavigationManager} from "ninjagoat";
+import * as _ from "lodash";
 
 @injectable()
 class AuthorizedRoutingAdapter implements IRoutingAdapter {
