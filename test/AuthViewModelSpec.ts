@@ -20,7 +20,8 @@ describe("Given a logout viewmodel", () => {
             clientNamespace: 'test.auth0.com',
             logoutCallbackUrl: '',
             clientId: '',
-            notAuthorizedRedirect: {area: 'Login'}
+            notAuthorizedRedirect: {area: 'Login'},
+            connection: ""
         }, navigationManager.object);
     });
 

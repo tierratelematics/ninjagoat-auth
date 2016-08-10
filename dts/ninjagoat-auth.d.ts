@@ -26,7 +26,8 @@ declare module NinjagoatAuth {
         notAuthorizedRedirect:{
             area:string;
             viewmodelId?:string;
-        }
+        },
+        connection:string;
     }
 
     export interface IAuthProvider {
