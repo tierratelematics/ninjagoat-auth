@@ -31,7 +31,7 @@ declare module NinjagoatAuth {
     }
 
     export interface IAuthProvider {
-        login(username:string, password:string):Promise<any>;
+        login(username:string, password:string, scope?:string):Promise<any>;
         signup(username:string, password:string):Promise<void>;
         changePassword(username:string):Promise<void>;
         requestProfile():Promise<any>;
