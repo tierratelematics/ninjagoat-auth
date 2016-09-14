@@ -4,7 +4,6 @@ import {inject} from "inversify";
 import {ViewModel} from "ninjagoat";
 import IAuthConfig from "../interfaces/IAuthConfig";
 import {INavigationManager} from "ninjagoat";
-import {ISettingsManager} from "ninjagoat";
 
 @ViewModel("Logout")
 class LogoutViewModel implements IViewModel<any> {
@@ -13,12 +12,8 @@ class LogoutViewModel implements IViewModel<any> {
     private subject = new Subject<void>();
     private subscription:IDisposable;
 
-    constructor(@inject("ISettingsManager") private settingsManager:ISettingsManager,
-                @inject("IAuthConfig") private authConfig:IAuthConfig,
+    constructor(@inject("IAuthConfig") private authConfig:IAuthConfig,
                 @inject("INavigationManager") private navigationManager:INavigationManager) {
-        this.settingsManager.setValue("auth_id_token", null);
-        this.settingsManager.setValue("auth_access_token", null);
-        this.settingsManager.setValue("auth_profile", null);
         this.navigationManager.navigate(authConfig.notAuthorizedRedirect.area, authConfig.notAuthorizedRedirect.viewmodelId);
     }
 
