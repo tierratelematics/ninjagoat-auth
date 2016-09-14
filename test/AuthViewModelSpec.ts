@@ -9,14 +9,12 @@ import MockSettingsManager from "./fixtures/MockSettingsManager";
 describe("Given a logout viewmodel", () => {
 
     let subject:LogoutViewModel,
-        navigationManager:TypeMoq.Mock<INavigationManager>,
-        settingsManager:TypeMoq.Mock<ISettingsManager>;
+        navigationManager:TypeMoq.Mock<INavigationManager>;
 
     beforeEach(() => {
-        settingsManager = TypeMoq.Mock.ofType(MockSettingsManager);
         navigationManager = TypeMoq.Mock.ofType(MockNavigationManager);
         navigationManager.setup(navigationManager => navigationManager.navigate('Login', undefined));
-        subject = new LogoutViewModel(settingsManager.object, {
+        subject = new LogoutViewModel({
             clientNamespace: 'test.auth0.com',
             logoutCallbackUrl: '',
             clientId: '',
@@ -26,12 +24,6 @@ describe("Given a logout viewmodel", () => {
     });
 
     context("when it's triggered", () => {
-        it("should clear the saved access token and jwt", () => {
-            settingsManager.verify(settingsManager => settingsManager.setValue("auth_id_token", null), TypeMoq.Times.once());
-            settingsManager.verify(settingsManager => settingsManager.setValue("auth_access_token", null), TypeMoq.Times.once());
-            settingsManager.verify(settingsManager => settingsManager.setValue("auth_profile", null), TypeMoq.Times.once());
-        });
-
         it("should redirect the user to the configured return page", () => {
             navigationManager.verify(navigationManager => navigationManager.navigate('Login', undefined), TypeMoq.Times.once());
         });

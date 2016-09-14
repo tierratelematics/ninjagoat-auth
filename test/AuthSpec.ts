@@ -59,9 +59,14 @@ describe("Given an auth provider", () => {
     context("when the user logs out", () => {
         beforeEach(() => {
             locationNavigator.setup(locationNavigator => locationNavigator.navigate("https://test.auth0.com/v2/logout?returnTo=http://localhost&client_id=test"));
+            subject.logout();
+        });
+        it("should erase the user settings", () => {
+            settingsManager.verify(settingsManager => settingsManager.setValue("auth_id_token", null), TypeMoq.Times.once());
+            settingsManager.verify(settingsManager => settingsManager.setValue("auth_access_token", null), TypeMoq.Times.once());
+            settingsManager.verify(settingsManager => settingsManager.setValue("auth_profile", null), TypeMoq.Times.once());
         });
         it("should redirect to the auth0 logout page", () => {
-            subject.logout();
             locationNavigator.verify(locationNavigator => locationNavigator.navigate("https://test.auth0.com/v2/logout?returnTo=http://localhost&client_id=test"), TypeMoq.Times.once());
         });
     });
