@@ -44,6 +44,34 @@ declare module NinjagoatAuth {
         getIDToken():string;
     }
 
+    export interface ILocationNavigator {
+        navigate(url:string);
+    }
+
+    export class Auth0Provider implements IAuthProvider, IAuthDataRetriever {
+
+        auth: any;
+
+        constructor(authConfig:IAuthConfig, settingsManager:ISettingsManager, locationNavigator:ILocationNavigator);
+
+        login(username:string, password:string, scope?:string):Promise<void>;
+
+        signup(username:string, password:string):Promise<void>;
+
+        changePassword(username:string):Promise<void>;
+
+        requestProfile():Promise<any>;
+
+        logout():Promise<void>;
+
+        isLoggedIn():boolean;
+
+        getAccessToken():string;
+
+        getIDToken():string;
+
+    }
+
     export class AuthHttpClient implements IHttpClient {
 
         constructor(httpClient:IHttpClient, settingsManager:ISettingsManager);
