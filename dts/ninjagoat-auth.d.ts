@@ -50,7 +50,7 @@ declare module NinjagoatAuth {
 
     export class Auth0Provider implements IAuthProvider, IAuthDataRetriever {
 
-        auth: any;
+        protected auth:any;
 
         constructor(authConfig:IAuthConfig, settingsManager:ISettingsManager, locationNavigator:ILocationNavigator);
 
@@ -69,7 +69,6 @@ declare module NinjagoatAuth {
         getAccessToken():string;
 
         getIDToken():string;
-
     }
 
     export class AuthHttpClient implements IHttpClient {

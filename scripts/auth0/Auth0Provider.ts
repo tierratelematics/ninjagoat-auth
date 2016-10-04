@@ -10,7 +10,7 @@ import * as Promise from "bluebird";
 @injectable()
 class Auth0Provider implements IAuthProvider, IAuthDataRetriever {
 
-    auth:any;
+    protected auth:any;
 
     constructor(@inject("IAuthConfig") private authConfig:IAuthConfig,
                 @inject("ISettingsManager") private settingsManager:ISettingsManager,
