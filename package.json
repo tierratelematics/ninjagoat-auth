@@ -1,6 +1,6 @@
 {
     "name": "ninjagoat-auth",
-    "version": "0.7.4",
+    "version": "0.7.5",
     "dependencies": {
         "auth0-js": "^7.0.3",
         "bluebird": "^3.4.0",
