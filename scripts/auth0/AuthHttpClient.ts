@@ -32,11 +32,10 @@ class AuthHttpClient implements IHttpClient {
 
     private mergeAuthorizationHeader(headers:Dictionary<string>):Dictionary<string> {
         let idToken = this.settingsManager.getValue<string>('auth_id_token');
-        return idToken ? merge(headers, {
+        return idToken ? merge({
             Authorization: 'Bearer ' + idToken
-        }) : headers;
+        }, headers) : headers;
     }
-
 }
 
 export default AuthHttpClient

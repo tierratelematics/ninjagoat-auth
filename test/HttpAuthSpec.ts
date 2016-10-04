@@ -29,6 +29,15 @@ describe("Given an http client", () => {
                 'Authorization': "Bearer jwt"
             })), TypeMoq.Times.once());
         });
+
+        context("but I need to pass a custom authorization token", () => {
+            it("should overwrite the stored one", () => {
+                subject.get("/test", {Authorization: "testToken"});
+                decoratedHttpClient.verify(decoratedHttpClient => decoratedHttpClient.get('/test', TypeMoq.It.isValue(<Dictionary<string>>{
+                    'Authorization': "testToken"
+                })), TypeMoq.Times.once());
+            });
+        });
     });
 
     context("when there are no user data stored in the browser", () => {
