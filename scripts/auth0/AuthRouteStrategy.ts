@@ -2,29 +2,28 @@ import {IRouteStrategy} from "ninjagoat";
 import {RegistryEntry} from "ninjagoat";
 import {RouterState} from "react-router";
 import * as Promise from "bluebird";
-import {INavigationManager} from "ninjagoat";
 import {inject, injectable} from "inversify";
 import IAuthProvider from "../interfaces/IAuthProvider";
-import IAuthConfig from "../interfaces/IAuthConfig";
+import IAuthDataRetriever from "../interfaces/IAuthDataRetriever";
 
 @injectable()
 class AuthRouteStrategy implements IRouteStrategy {
 
-    constructor(@inject("INavigationManager") private navigationManager: INavigationManager,
-                @inject("IAuthProvider") private authProvider: IAuthProvider,
-                @inject("IAuthConfig") private authConfig: IAuthConfig) {
+    constructor(@inject("IAuthProvider") private authProvider: IAuthProvider,
+                @inject("IAuthProvider") private authDataRetriever: IAuthDataRetriever) {
 
     }
 
     enter(entry: RegistryEntry<any>, nextState: RouterState): Promise<string> {
         let needsAuthorization = <boolean>Reflect.getMetadata("ninjagoat:authorized", entry.construct);
         if (!needsAuthorization) return Promise.resolve("");
-        return this.authProvider.isLoggedIn()
-            .then(loggedIn => {
-                if (!loggedIn)
-                    return this.navigationManager.getNavigationPath(this.authConfig.notAuthorizedRedirect.area, this.authConfig.notAuthorizedRedirect.viewmodelId);
-                return "";
+        return Promise.resolve(this.authDataRetriever.getIDToken())
+            .then(idToken => idToken ? null: this.authProvider.requestSSOData())
+            .then((data: any) => {
+                if (!data) return "";
+                this.authProvider.login(location.href, data.sso ? data.lastUsedConnection.name : null);
             });
+
     }
 
 }

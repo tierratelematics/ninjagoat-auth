@@ -34,6 +34,7 @@ class Auth0Provider implements IAuthProvider, IAuthDataRetriever {
             this.settingsManager.setValue("auth_id_token", authResult.idToken);
             this.settingsManager.setValue("auth_access_token", authResult.accessToken);
             this.settingsManager.setValue("auth_refresh_token", authResult.refreshToken);
+            this.locationNavigator.navigate(authResult.state);
         });
 
         this.auth = new Auth0({
@@ -43,7 +44,7 @@ class Auth0Provider implements IAuthProvider, IAuthDataRetriever {
         });
     }
 
-    login(redirectUrl:string, connectionName?:string) {
+    login(redirectUrl: string, connectionName?: string) {
         let params = {
             state: redirectUrl
         };
@@ -72,7 +73,7 @@ class Auth0Provider implements IAuthProvider, IAuthDataRetriever {
         });
     }
 
-    requestSSO(): Promise<any> {
+    requestSSOData(): Promise<any> {
         return new Promise<any>((resolve, reject) => {
             this.lock.getSSOData((error, data) => {
                 if (error) return reject(error);
@@ -91,16 +92,16 @@ class Auth0Provider implements IAuthProvider, IAuthDataRetriever {
         return Promise.resolve();
     }
 
-    isLoggedIn(): Promise<boolean> {
-        return Promise.resolve(!!this.getIDToken());
-    }
-
     getAccessToken(): string {
-        return this.settingsManager.getValue<any>("auth_access_token");
+        return this.settingsManager.getValue<string>("auth_access_token");
     }
 
     getIDToken(): string {
-        return this.settingsManager.getValue<any>("auth_id_token");
+        return this.settingsManager.getValue<string>("auth_id_token");
+    }
+
+    getRefreshToken(): string {
+        return this.settingsManager.getValue<string>("auth_refresh_token");
     }
 
 }
