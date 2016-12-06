@@ -23,7 +23,6 @@ class AuthRouteStrategy implements IRouteStrategy {
                 if (!data) return "";
                 this.authProvider.login(location.href, data.sso ? data.lastUsedConnection.name : null);
             });
-
     }
 
 }

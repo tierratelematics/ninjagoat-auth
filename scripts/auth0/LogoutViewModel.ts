@@ -4,9 +4,10 @@ import {INavigationManager} from "ninjagoat";
 import {ObservableViewModel} from "ninjagoat";
 
 @ViewModel("Logout")
-class LogoutViewModel implements ObservableViewModel<void> {
+class LogoutViewModel extends ObservableViewModel<void> {
 
     constructor(@inject("INavigationManager") private navigationManager: INavigationManager) {
+        super();
         this.navigationManager.navigate("Index");
     }
 
