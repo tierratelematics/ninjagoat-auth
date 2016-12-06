@@ -10,18 +10,21 @@ import IAuthConfig from "../interfaces/IAuthConfig";
 @injectable()
 class AuthRouteStrategy implements IRouteStrategy {
 
-    constructor(@inject("INavigationManager") private navigationManager:INavigationManager,
-                @inject("IAuthProvider") private authProvider:IAuthProvider,
-                @inject("IAuthConfig") private authConfig:IAuthConfig) {
+    constructor(@inject("INavigationManager") private navigationManager: INavigationManager,
+                @inject("IAuthProvider") private authProvider: IAuthProvider,
+                @inject("IAuthConfig") private authConfig: IAuthConfig) {
 
     }
 
     enter(entry: RegistryEntry<any>, nextState: RouterState): Promise<string> {
         let needsAuthorization = <boolean>Reflect.getMetadata("ninjagoat:authorized", entry.construct);
-        let url =  "";
-        if (needsAuthorization && !this.authProvider.isLoggedIn())
-             url = this.navigationManager.getNavigationPath(this.authConfig.notAuthorizedRedirect.area, this.authConfig.notAuthorizedRedirect.viewmodelId);
-        return Promise.resolve(url);
+        return Promise.resolve(needsAuthorization)
+            .then(value => !value? true: this.authProvider.isLoggedIn())
+            .then(loggedIn => {
+                if (!loggedIn)
+                    return this.navigationManager.getNavigationPath(this.authConfig.notAuthorizedRedirect.area, this.authConfig.notAuthorizedRedirect.viewmodelId);
+                return "";
+            });
     }
 
 }

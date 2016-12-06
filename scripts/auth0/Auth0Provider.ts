@@ -55,8 +55,8 @@ class Auth0Provider implements IAuthProvider, IAuthDataRetriever {
         return Promise.resolve();
     }
 
-    isLoggedIn(): boolean {
-        return !!this.getIDToken();
+    isLoggedIn(): Promise<boolean> {
+        return Promise.resolve(!!this.getIDToken());
     }
 
     getAccessToken(): string {

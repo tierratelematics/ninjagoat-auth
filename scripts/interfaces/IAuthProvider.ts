@@ -5,7 +5,7 @@ interface IAuthProvider {
     callback(accessToken:string, idToken:string);
     requestProfile():Promise<any>;
     logout();
-    isLoggedIn():boolean;
+    isLoggedIn():Promise<boolean>;
 }
 
 export default IAuthProvider
