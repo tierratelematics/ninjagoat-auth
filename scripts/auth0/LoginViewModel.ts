@@ -1,21 +1,35 @@
 import {IViewModel} from "ninjagoat";
 import {Subject, IDisposable, IObserver} from "rx";
+import IHashRetriever from "../interfaces/IHashRetriever";
+import IAuthProvider from "../interfaces/IAuthProvider";
 import {inject} from "inversify";
 import {ViewModel} from "ninjagoat";
 import IAuthConfig from "../interfaces/IAuthConfig";
 import {INavigationManager} from "ninjagoat";
 
-@ViewModel("Logout")
-class LogoutViewModel implements IViewModel<any> {
+@ViewModel("Login")
+class LoginViewModel implements IViewModel<any> {
     "force nominal type for IViewModel":any;
 
     private subject = new Subject<void>();
     private subscription:IDisposable;
 
-    constructor(@inject("IAuthConfig") private authConfig:IAuthConfig,
+    constructor(@inject("IHashRetriever") private hashRetriever:IHashRetriever,
+                @inject("IAuthProvider") private authProvider:IAuthProvider,
+                @inject("IAuthConfig") private authConfig:IAuthConfig,
                 @inject("INavigationManager") private navigationManager:INavigationManager) {
-        this.settingsManager.setValue("auth_user_data", null);
-        this.navigationManager.navigate(authConfig.notAuthorizedRedirect.area, authConfig.notAuthorizedRedirect.viewmodelId);
+        this.saveCredentials();
+        this.navigationManager.navigate(authConfig.loginRedirect.area, authConfig.loginRedirect.viewmodelId);
+    }
+
+    private saveCredentials() {
+        let hash = this.hashRetriever.retrieveHash();
+        this.authProvider.callback(this.getHashValue(hash, 'access_token'), this.getHashValue(hash, 'id_token'));
+    }
+
+    private getHashValue(hash:string, key:string):string {
+        let matches = hash.match(new RegExp(key + '=([^&]*)'));
+        return matches ? matches[1] : null;
     }
 
     subscribe(observer:IObserver<void>):IDisposable
@@ -38,4 +52,4 @@ function isObserver<T>(observerOrOnNext:(IObserver<T>) | ((value:T) => void)):ob
     return (<IObserver<T>>observerOrOnNext).onNext !== undefined;
 }
 
-export default LogoutViewModel
+export default LoginViewModel

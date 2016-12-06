@@ -34,11 +34,10 @@ declare module NinjagoatAuth {
     }
 
     export interface IAuthProvider {
-        login(username:string, password:string, scope?:string):Promise<any>;
-        signup(username:string, password:string):Promise<void>;
-        changePassword(username:string):Promise<void>;
+        login();
+        callback(accessToken:string, idToken:string);
         requestProfile():Promise<any>;
-        logout():Promise<void>;
+        logout();
         isLoggedIn():boolean;
     }
 
@@ -53,26 +52,26 @@ declare module NinjagoatAuth {
 
     export class Auth0Provider implements IAuthProvider, IAuthDataRetriever {
 
-        protected auth:any;
+        protected lock: any;
 
-        constructor(authConfig:IAuthConfig, settingsManager:ISettingsManager, locationNavigator:ILocationNavigator);
+        constructor(authConfig: IAuthConfig, settingsManager: ISettingsManager, locationNavigator: ILocationNavigator);
 
-        login(username:string, password:string, scope?:string):Promise<void>;
+        login();
 
-        signup(username:string, password:string):Promise<void>;
+        callback(accessToken: string, idToken: string);
 
-        changePassword(username:string):Promise<void>;
+        requestProfile(): Promise<any>;
 
-        requestProfile():Promise<any>;
+        logout(): Promise<void>;
 
-        logout():Promise<void>;
+        isLoggedIn(): boolean;
 
-        isLoggedIn():boolean;
+        getAccessToken(): string;
 
-        getAccessToken():string;
+        getIDToken(): string;
 
-        getIDToken():string;
     }
+
 
     export class AuthHttpClient implements IHttpClient {
 
@@ -95,6 +94,10 @@ declare module NinjagoatAuth {
     }
 
     export function Authorized();
+
+    export interface IHashRetriever {
+        retrieveHash():string;
+    }
 }
 
 export = NinjagoatAuth;

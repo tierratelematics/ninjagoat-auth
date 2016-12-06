@@ -1,7 +1,8 @@
 import IAuthProvider from "../interfaces/IAuthProvider";
 import {injectable, inject} from "inversify";
 import IAuthConfig from "../interfaces/IAuthConfig";
-const Auth0 = typeof  document === "undefined" ? null : require("auth0-js");
+//Needed cause auth0-lock and doesn't work since document is not found
+const Auth0Lock = typeof document === "undefined" ? null : require("auth0-lock").default;
 import {ISettingsManager} from "ninjagoat";
 import IAuthDataRetriever from "../interfaces/IAuthDataRetriever";
 import ILocationNavigator from "../interfaces/ILocationNavigator";
@@ -10,72 +11,42 @@ import * as Promise from "bluebird";
 @injectable()
 class Auth0Provider implements IAuthProvider, IAuthDataRetriever {
 
-    protected auth:any;
+    protected lock: any;
 
-    constructor(@inject("IAuthConfig") private authConfig:IAuthConfig,
-                @inject("ISettingsManager") private settingsManager:ISettingsManager,
-                @inject("ILocationNavigator") private locationNavigator:ILocationNavigator) {
-        if (Auth0)
-            this.auth = new Auth0({
-                domain: this.authConfig.clientNamespace,
-                clientID: this.authConfig.clientId
+    constructor(@inject("IAuthConfig") private authConfig: IAuthConfig,
+                @inject("ISettingsManager") private settingsManager: ISettingsManager,
+                @inject("ILocationNavigator") private locationNavigator: ILocationNavigator) {
+        if (Auth0Lock)
+            this.lock = new Auth0Lock(this.authConfig.clientId, this.authConfig.clientNamespace, {
+                auth: {
+                    redirectUrl: this.authConfig.loginCallbackUrl,
+                    responseType: 'token',
+                    authParams: {
+                        scope: 'openid email'
+                    }
+                }
             });
     }
 
-    login(username:string, password:string, scope?:string):Promise<void> {
-        return new Promise<any>((resolve, reject)=> {
-            if (!username || !password) return reject(new Error("Some credentials are missing"));
-            this.auth.signin({
-                connection: this.authConfig.connection,
-                username: username,
-                password: password,
-                scope: scope || ""
-            }, (error, data) => {
-                if (error) return reject(error);
-                this.settingsManager.setValue("auth_id_token", data.idToken);
-                this.settingsManager.setValue("auth_access_token", data.accessToken);
-                resolve();
-            });
-        }).then(() => this.requestProfile());
+    login() {
+        this.lock.show();
     }
 
-    signup(username:string, password:string):Promise<void> {
-        return new Promise<void>((resolve, reject) => {
-            if (!username || !password) return reject(new Error("Some credentials are missing"));
-            this.auth.signup({
-                connection: this.authConfig.connection,
-                username: username,
-                password: password
-            }, function (error) {
-                if (error) return reject(error);
-                resolve();
-            });
-        });
+    callback(accessToken: string, idToken: string) {
+        this.settingsManager.setValue("auth_id_token", idToken);
+        this.settingsManager.setValue("auth_access_token", accessToken);
     }
 
-    changePassword(username:string):Promise<void> {
-        return new Promise<void>((resolve, reject) => {
-            if (!username) return reject(new Error("Some credentials are missing"));
-            this.auth.changePassword({
-                connection: this.authConfig.connection,
-                email: username
-            }, function (error) {
-                if (error) return reject(error);
-                resolve();
-            });
-        });
-    }
-
-    requestProfile():Promise<any> {
+    requestProfile(): Promise<any> {
         return new Promise<any>((resolve, reject) => {
-            this.auth.getProfile(this.getIDToken(), (error, profile) => {
+            this.lock.getProfile(this.getIDToken(), (error, profile) => {
                 if (error) return reject(error);
                 resolve(profile);
             });
         });
     }
 
-    logout():Promise<void> {
+    logout(): Promise<void> {
         this.settingsManager.setValue("auth_id_token", null);
         this.settingsManager.setValue("auth_access_token", null);
         this.settingsManager.setValue("auth_profile", null);
@@ -84,16 +55,18 @@ class Auth0Provider implements IAuthProvider, IAuthDataRetriever {
         return Promise.resolve();
     }
 
-    isLoggedIn():boolean {
+    isLoggedIn(): boolean {
         return !!this.getIDToken();
     }
 
-    getAccessToken():string {
-        return this.settingsManager.getValue<string>("auth_access_token");
+    getAccessToken(): string {
+        let userData = this.settingsManager.getValue<any>("auth_user_data");
+        return userData ? userData.access_token : null;
     }
 
-    getIDToken():string {
-        return this.settingsManager.getValue<string>("auth_id_token");
+    getIDToken(): string {
+        let userData = this.settingsManager.getValue<any>("auth_user_data");
+        return userData ? userData.id_token : null;
     }
 
 }
