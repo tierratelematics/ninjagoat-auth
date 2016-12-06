@@ -9,6 +9,9 @@ import {ISettingsManager} from "ninjagoat";
 import {Dictionary} from "ninjagoat";
 import {HttpResponse} from "ninjagoat";
 import * as Promise from "bluebird";
+import {IRouteStrategy} from "ninjagoat";
+import {RegistryEntry} from "ninjagoat";
+import {RouterState} from "react-router";
 
 declare module NinjagoatAuth {
 
@@ -82,6 +85,12 @@ declare module NinjagoatAuth {
         put(url:string, body:any, headers?:Dictionary<string>):Rx.Observable<HttpResponse>;
 
         delete(url:string, headers?:Dictionary<string>):Rx.Observable<HttpResponse>;
+
+    }
+
+    export class AuthRouteStrategy implements IRouteStrategy {
+
+        enter(entry: RegistryEntry<any>, nextState: RouterState): Promise<string>;
 
     }
 

@@ -11,8 +11,8 @@ import IAuthDataRetriever from "./interfaces/IAuthDataRetriever";
 import LogoutViewModel from "./auth0/LogoutViewModel";
 import ILocationNavigator from "./interfaces/ILocationNavigator";
 import LocationNavigator from "./LocationNavigator";
-import {IRoutingAdapter} from "ninjagoat";
-import AuthorizedRoutingAdapter from "./auth0/AuthorizedRoutingAdapter";
+import {IRouteStrategy} from "ninjagoat";
+import AuthRouteStrategy from "./auth0/AuthRouteStrategy";
 
 class AuthModule implements IModule {
 
@@ -23,8 +23,8 @@ class AuthModule implements IModule {
         kernel.unbind("IHttpClient");
         kernel.bind<IHttpClient>("HttpClient").to(HttpClient).inSingletonScope().whenInjectedInto(AuthHttpClient);
         kernel.bind<IHttpClient>("IHttpClient").to(AuthHttpClient).inSingletonScope();
-        kernel.unbind("IRoutingAdapter");
-        kernel.bind<IRoutingAdapter>("IRoutingAdapter").to(AuthorizedRoutingAdapter).inSingletonScope();
+        kernel.unbind("IRouteStrategy");
+        kernel.bind<IRouteStrategy>("IRouteStrategy").to(AuthRouteStrategy).inSingletonScope();
     };
 
     register(registry:IViewModelRegistry, serviceLocator?:IServiceLocator, overrides?:any):void {
