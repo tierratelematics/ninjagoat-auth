@@ -38,7 +38,7 @@ declare module NinjagoatAuth {
         callback(accessToken:string, idToken:string);
         requestProfile():Promise<any>;
         logout();
-        isLoggedIn():boolean;
+        isLoggedIn():Promise<boolean>;
     }
 
     export interface IAuthDataRetriever {
@@ -64,7 +64,7 @@ declare module NinjagoatAuth {
 
         logout(): Promise<void>;
 
-        isLoggedIn(): boolean;
+        isLoggedIn(): Promise<boolean>;
 
         getAccessToken(): string;
 

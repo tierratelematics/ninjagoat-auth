@@ -1,41 +1,19 @@
-import {IViewModel} from "ninjagoat";
-import {Subject, IDisposable, IObserver} from "rx";
 import {inject} from "inversify";
 import {ViewModel} from "ninjagoat";
-import IAuthConfig from "../interfaces/IAuthConfig";
 import {INavigationManager} from "ninjagoat";
+import {ObservableViewModel} from "ninjagoat";
 
 @ViewModel("Logout")
-class LogoutViewModel implements IViewModel<any> {
-    "force nominal type for IViewModel":any;
+class LogoutViewModel implements ObservableViewModel<void> {
 
-    private subject = new Subject<void>();
-    private subscription:IDisposable;
-
-    constructor(@inject("IAuthConfig") private authConfig:IAuthConfig,
-                @inject("INavigationManager") private navigationManager:INavigationManager) {
-        this.settingsManager.setValue("auth_user_data", null);
-        this.navigationManager.navigate(authConfig.notAuthorizedRedirect.area, authConfig.notAuthorizedRedirect.viewmodelId);
+    constructor(@inject("INavigationManager") private navigationManager: INavigationManager) {
+        this.navigationManager.navigate("Index");
     }
 
-    subscribe(observer:IObserver<void>):IDisposable
-    subscribe(onNext?:(value:void) => void, onError?:(exception:any) => void, onCompleted?:() => void):IDisposable
-    subscribe(observerOrOnNext?:(IObserver<void>) | ((value:void) => void), onError?:(exception:any) => void, onCompleted?:() => void):IDisposable {
-        if (isObserver(observerOrOnNext))
-            return this.subject.subscribe(observerOrOnNext);
-        else
-            return this.subject.subscribe(observerOrOnNext, onError, onCompleted);
+    onData(data: void) {
+
     }
 
-
-    dispose():void {
-        if (this.subscription) this.subscription.dispose();
-        this.subject.onCompleted();
-    }
-}
-
-function isObserver<T>(observerOrOnNext:(IObserver<T>) | ((value:T) => void)):observerOrOnNext is IObserver<T> {
-    return (<IObserver<T>>observerOrOnNext).onNext !== undefined;
 }
 
 export default LogoutViewModel

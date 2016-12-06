@@ -18,8 +18,8 @@ class AuthRouteStrategy implements IRouteStrategy {
 
     enter(entry: RegistryEntry<any>, nextState: RouterState): Promise<string> {
         let needsAuthorization = <boolean>Reflect.getMetadata("ninjagoat:authorized", entry.construct);
-        return Promise.resolve(needsAuthorization)
-            .then(value => !value? true: this.authProvider.isLoggedIn())
+        if (!needsAuthorization) return Promise.resolve("");
+        return this.authProvider.isLoggedIn()
             .then(loggedIn => {
                 if (!loggedIn)
                     return this.navigationManager.getNavigationPath(this.authConfig.notAuthorizedRedirect.area, this.authConfig.notAuthorizedRedirect.viewmodelId);
