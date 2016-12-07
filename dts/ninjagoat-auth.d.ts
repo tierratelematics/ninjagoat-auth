@@ -9,6 +9,9 @@ import {ISettingsManager} from "ninjagoat";
 import {Dictionary} from "ninjagoat";
 import {HttpResponse} from "ninjagoat";
 import * as Promise from "bluebird";
+import {IRouteStrategy} from "ninjagoat";
+import {RegistryEntry} from "ninjagoat";
+import {RouterState} from "react-router";
 
 declare module NinjagoatAuth {
 
@@ -22,21 +25,16 @@ declare module NinjagoatAuth {
     export interface IAuthConfig {
         clientId:string;
         clientNamespace:string;
+        loginCallbackUrl:string;
         logoutCallbackUrl:string;
-        notAuthorizedRedirect:{
-            area:string;
-            viewmodelId?:string;
-        },
-        connection:string;
     }
 
     export interface IAuthProvider {
-        login(username:string, password:string, scope?:string):Promise<any>;
-        signup(username:string, password:string):Promise<void>;
-        changePassword(username:string):Promise<void>;
+        login();
+        callback(accessToken:string, idToken:string);
         requestProfile():Promise<any>;
-        logout():Promise<void>;
-        isLoggedIn():boolean;
+        logout();
+        isLoggedIn():Promise<boolean>;
     }
 
     export interface IAuthDataRetriever {
@@ -50,26 +48,26 @@ declare module NinjagoatAuth {
 
     export class Auth0Provider implements IAuthProvider, IAuthDataRetriever {
 
-        protected auth:any;
+        protected lock: any;
 
-        constructor(authConfig:IAuthConfig, settingsManager:ISettingsManager, locationNavigator:ILocationNavigator);
+        constructor(authConfig: IAuthConfig, settingsManager: ISettingsManager, locationNavigator: ILocationNavigator);
 
-        login(username:string, password:string, scope?:string):Promise<void>;
+        login();
 
-        signup(username:string, password:string):Promise<void>;
+        callback(accessToken: string, idToken: string);
 
-        changePassword(username:string):Promise<void>;
+        requestProfile(): Promise<any>;
 
-        requestProfile():Promise<any>;
+        logout(): Promise<void>;
 
-        logout():Promise<void>;
+        isLoggedIn(): Promise<boolean>;
 
-        isLoggedIn():boolean;
+        getAccessToken(): string;
 
-        getAccessToken():string;
+        getIDToken(): string;
 
-        getIDToken():string;
     }
+
 
     export class AuthHttpClient implements IHttpClient {
 
@@ -85,7 +83,17 @@ declare module NinjagoatAuth {
 
     }
 
+    export class AuthRouteStrategy implements IRouteStrategy {
+
+        enter(entry: RegistryEntry<any>, nextState: RouterState): Promise<string>;
+
+    }
+
     export function Authorized();
+
+    export interface IHashRetriever {
+        retrieveHash():string;
+    }
 }
 
 export = NinjagoatAuth;
