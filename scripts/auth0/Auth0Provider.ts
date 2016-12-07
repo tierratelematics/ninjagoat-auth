@@ -3,7 +3,7 @@ import {injectable, inject} from "inversify";
 import IAuthConfig from "../interfaces/IAuthConfig";
 //Needed cause auth0 and doesn't work since document is not found
 const Auth0Lock = typeof document === "undefined" ? null : require("auth0-lock").default;
-const Auth0 = typeof document === "undefined" ? null : require("auth0-js").default;
+const Auth0 = typeof document === "undefined" ? null : require("auth0-js");
 import {ISettingsManager} from "ninjagoat";
 import IAuthDataRetriever from "../interfaces/IAuthDataRetriever";
 import ILocationNavigator from "../interfaces/ILocationNavigator";
@@ -22,11 +22,18 @@ class Auth0Provider implements IAuthProvider, IAuthDataRetriever {
     }
 
     private initialize() {
+        this.auth = new Auth0({
+            domain: this.authConfig.clientNamespace,
+            clientID: this.authConfig.clientId,
+            callbackOnLocationHash: true,
+            callbackURL: this.authConfig.loginCallbackUrl
+        });
+
         this.lock = new Auth0Lock(this.authConfig.clientId, this.authConfig.clientNamespace, {
             auth: {
                 redirectUrl: this.authConfig.loginCallbackUrl,
                 authParams: {
-                    scope: 'openid email'
+                    scope: 'openid'
                 }
             }
         });
@@ -36,30 +43,21 @@ class Auth0Provider implements IAuthProvider, IAuthDataRetriever {
             this.settingsManager.setValue("auth_refresh_token", authResult.refreshToken);
             this.locationNavigator.navigate(authResult.state);
         });
-
-        this.auth = new Auth0({
-            domain: this.authConfig.clientNamespace,
-            clientID: this.authConfig.clientId,
-            callbackOnLocationHash: true
-        });
     }
 
     login(redirectUrl: string, connectionName?: string) {
-        let params = {
-            state: redirectUrl
-        };
-
         //If I have a connectionName it means there's a SSO active
         if (!connectionName) {
-            this.lock.show({
-                auth: {
-                    params: params
-                }
-            });
+            this.locationNavigator.navigate(`https://${this.authConfig.clientNamespace}/authorize?response_type=token` +
+                `&scope=openid` +
+                `&client_id=${this.authConfig.clientId}` +
+                `&redirect_uri=${this.authConfig.loginCallbackUrl}` +
+                `&state=${redirectUrl}`);
         } else {
             this.auth.signin({
                 connection: connectionName,
-                params: params
+                scope: 'openid',
+                state: redirectUrl
             });
         }
     }
@@ -75,7 +73,7 @@ class Auth0Provider implements IAuthProvider, IAuthDataRetriever {
 
     requestSSOData(): Promise<any> {
         return new Promise<any>((resolve, reject) => {
-            this.lock.getSSOData((error, data) => {
+            this.auth.getSSOData((error, data) => {
                 if (error) return reject(error);
                 resolve(data);
             });

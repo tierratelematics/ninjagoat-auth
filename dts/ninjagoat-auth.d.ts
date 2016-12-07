@@ -25,12 +25,8 @@ declare module NinjagoatAuth {
     export interface IAuthConfig {
         clientId:string;
         clientNamespace:string;
+        loginCallbackUrl:string;
         logoutCallbackUrl:string;
-        notAuthorizedRedirect:{
-            area:string;
-            viewmodelId?:string;
-        },
-        connection:string;
     }
 
     export interface IAuthProvider {
