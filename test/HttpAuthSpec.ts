@@ -5,7 +5,6 @@ import {ISettingsManager} from "ninjagoat";
 import MockSettingsManager from "./fixtures/MockSettingsManager";
 import {IHttpClient} from "ninjagoat";
 import MockHttpClient from "./fixtures/MockHttpClient";
-import It = TypeMoqIntern.It;
 import {Dictionary} from "ninjagoat";
 
 describe("Given an http client", () => {
