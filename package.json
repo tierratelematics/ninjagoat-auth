@@ -17,7 +17,7 @@
     "typemoq": "^0.2.0"
   },
   "peerDependencies": {
-    "ninjagoat": "^0.12.8",
+    "ninjagoat": "^0.14.0",
     "react-router": "^2.1.1"
   },
   "scripts": {
