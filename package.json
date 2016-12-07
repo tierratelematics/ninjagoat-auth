@@ -1,6 +1,6 @@
 {
   "name": "ninjagoat-auth",
-  "version": "0.7.5",
+  "version": "0.8.0",
   "dependencies": {
     "auth0-js": "^7.5.0",
     "auth0-lock": "^10.0.1",
