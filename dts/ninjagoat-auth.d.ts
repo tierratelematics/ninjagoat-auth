@@ -30,16 +30,16 @@ declare module NinjagoatAuth {
     }
 
     export interface IAuthProvider {
-        login();
-        callback(accessToken:string, idToken:string);
+        login(redirectUrl:string, connectionName?:string);
         requestProfile():Promise<any>;
+        requestSSOData():Promise<any>;
         logout();
-        isLoggedIn():Promise<boolean>;
     }
 
     export interface IAuthDataRetriever {
         getAccessToken():string;
         getIDToken():string;
+        getRefreshToken():string;
     }
 
     export interface ILocationNavigator {
@@ -52,20 +52,19 @@ declare module NinjagoatAuth {
 
         constructor(authConfig: IAuthConfig, settingsManager: ISettingsManager, locationNavigator: ILocationNavigator);
 
-        login();
-
-        callback(accessToken: string, idToken: string);
+        login(redirectUrl: string, connectionName?: string);
 
         requestProfile(): Promise<any>;
 
-        logout(): Promise<void>;
+        requestSSOData(): Promise<any>;
 
-        isLoggedIn(): Promise<boolean>;
+        logout(): Promise<void>;
 
         getAccessToken(): string;
 
         getIDToken(): string;
 
+        getRefreshToken(): string;
     }
 
 
@@ -90,10 +89,6 @@ declare module NinjagoatAuth {
     }
 
     export function Authorized();
-
-    export interface IHashRetriever {
-        retrieveHash():string;
-    }
 }
 
 export = NinjagoatAuth;
