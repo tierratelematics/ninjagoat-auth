@@ -33,7 +33,7 @@ class Auth0Provider implements IAuthProvider, IAuthDataRetriever {
             auth: {
                 redirectUrl: this.authConfig.loginCallbackUrl,
                 authParams: {
-                    scope: 'openid'
+                    scope: this.getScope()
                 }
             }
         });
@@ -47,19 +47,24 @@ class Auth0Provider implements IAuthProvider, IAuthDataRetriever {
 
     login(redirectUrl: string, connectionName?: string) {
         //If I have a connectionName it means there's a SSO active
+        let scope = this.getScope();
         if (!connectionName) {
             this.locationNavigator.navigate(`https://${this.authConfig.clientNamespace}/authorize?response_type=token` +
-                `&scope=openid` +
+                `&scope=${scope}` +
                 `&client_id=${this.authConfig.clientId}` +
                 `&redirect_uri=${this.authConfig.loginCallbackUrl}` +
                 `&state=${redirectUrl}`);
         } else {
             this.auth.signin({
                 connection: connectionName,
-                scope: 'openid',
+                scope: scope,
                 state: redirectUrl
             });
         }
+    }
+
+    private getScope() {
+        return this.authConfig.scope || "openid";
     }
 
     requestProfile(): Promise<any> {

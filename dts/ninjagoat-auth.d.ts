@@ -27,6 +27,7 @@ declare module NinjagoatAuth {
         clientNamespace:string;
         loginCallbackUrl:string;
         logoutCallbackUrl:string;
+        scope?:string;
     }
 
     export interface IAuthProvider {
