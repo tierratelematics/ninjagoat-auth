@@ -13,7 +13,7 @@ import {RouterState} from "react-router";
 
 export class AuthModule implements IModule {
 
-    modules: (kernel: interfaces.Kernel) => void;
+    modules: (container: interfaces.Container) => void;
 
     register(registry: IViewModelRegistry, serviceLocator?: IServiceLocator, overrides?: any): void;
 }
