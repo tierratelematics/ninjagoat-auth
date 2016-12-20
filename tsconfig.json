@@ -1,17 +1,19 @@
 {
-    "compilerOptions": {
-        "target": "es5",
-        "jsx": "react",
-        "experimentalDecorators": true,
-        "emitDecoratorMetadata": true,
-        "module": "commonjs"
-    },
-    "exclude": [
-        "node_modules",
-        "test",
-        "dts"
+  "compilerOptions": {
+    "target": "es5",
+    "jsx": "react",
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "module": "commonjs",
+    "types": [
+      "node",
+      "mocha",
+      "reflect-metadata"
     ],
-    "files": [
-        "typings/index.d.ts"
+    "lib": [
+      "es5",
+      "es6",
+      "dom"
     ]
+  }
 }
