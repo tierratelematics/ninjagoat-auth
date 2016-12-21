@@ -18,15 +18,15 @@ import {Observable} from "rx";
 
 class AuthModule implements IModule {
 
-    modules = (kernel:interfaces.Kernel) => {
-        kernel.bind<IAuthProvider>("IAuthProvider").to(Auth0Provider).inSingletonScope();
-        kernel.bind<IAuthDataRetriever>("IAuthDataRetriever").to(Auth0Provider).inSingletonScope();
-        kernel.bind<ILocationNavigator>("ILocationNavigator").to(LocationNavigator).inSingletonScope();
-        kernel.unbind("IHttpClient");
-        kernel.bind<IHttpClient>("HttpClient").to(HttpClient).inSingletonScope().whenInjectedInto(AuthHttpClient);
-        kernel.bind<IHttpClient>("IHttpClient").to(AuthHttpClient).inSingletonScope();
-        kernel.unbind("IRouteStrategy");
-        kernel.bind<IRouteStrategy>("IRouteStrategy").to(AuthRouteStrategy).inSingletonScope();
+    modules = (container:interfaces.Container) => {
+        container.bind<IAuthProvider>("IAuthProvider").to(Auth0Provider).inSingletonScope();
+        container.bind<IAuthDataRetriever>("IAuthDataRetriever").to(Auth0Provider).inSingletonScope();
+        container.bind<ILocationNavigator>("ILocationNavigator").to(LocationNavigator).inSingletonScope();
+        container.unbind("IHttpClient");
+        container.bind<IHttpClient>("HttpClient").to(HttpClient).inSingletonScope().whenInjectedInto(AuthHttpClient);
+        container.bind<IHttpClient>("IHttpClient").to(AuthHttpClient).inSingletonScope();
+        container.unbind("IRouteStrategy");
+        container.bind<IRouteStrategy>("IRouteStrategy").to(AuthRouteStrategy).inSingletonScope();
     };
 
     register(registry:IViewModelRegistry, serviceLocator?:IServiceLocator, overrides?:any):void {
