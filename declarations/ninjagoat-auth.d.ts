@@ -10,6 +10,7 @@ import * as Promise from "bluebird";
 import {IRouteStrategy} from "ninjagoat";
 import {RegistryEntry} from "ninjagoat";
 import {RouterState} from "react-router";
+import {Observable} from "rx";
 
 export class AuthModule implements IModule {
 
@@ -69,13 +70,13 @@ export class AuthHttpClient implements IHttpClient {
 
     constructor(httpClient: IHttpClient, settingsManager: ISettingsManager);
 
-    get(url: string, headers?: Dictionary<string>): Rx.Observable<HttpResponse>;
+    get(url: string, headers?: Dictionary<string>): Observable<HttpResponse>;
 
-    post(url: string, body: any, headers?: Dictionary<string>): Rx.Observable<HttpResponse>;
+    post(url: string, body: any, headers?: Dictionary<string>): Observable<HttpResponse>;
 
-    put(url: string, body: any, headers?: Dictionary<string>): Rx.Observable<HttpResponse>;
+    put(url: string, body: any, headers?: Dictionary<string>): Observable<HttpResponse>;
 
-    delete(url: string, headers?: Dictionary<string>): Rx.Observable<HttpResponse>;
+    delete(url: string, headers?: Dictionary<string>): Observable<HttpResponse>;
 
 }
 
