@@ -21,6 +21,7 @@ describe("Given an auth provider", () => {
             logoutCallbackUrl: 'http://localhost',
             loginCallbackUrl: 'http://localhost',
             clientId: 'test',
+            connection: ""
         }, settingsManager.object, locationNavigator.object);
     });
 
