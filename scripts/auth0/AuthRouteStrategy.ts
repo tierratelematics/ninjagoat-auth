@@ -6,13 +6,15 @@ import {inject, injectable} from "inversify";
 import IAuthProvider from "../interfaces/IAuthProvider";
 import IAuthDataRetriever from "../interfaces/IAuthDataRetriever";
 import ILocationNavigator from "../interfaces/ILocationNavigator";
+import IAuthConfig from "../interfaces/IAuthConfig";
 
 @injectable()
 class AuthRouteStrategy implements IRouteStrategy {
 
     constructor(@inject("IAuthProvider") private authProvider: IAuthProvider,
                 @inject("IAuthProvider") private authDataRetriever: IAuthDataRetriever,
-                @inject("ILocationNavigator") private locationNavigator: ILocationNavigator) {
+                @inject("ILocationNavigator") private locationNavigator: ILocationNavigator,
+                @inject("IAuthConfig") private config: IAuthConfig) {
 
     }
 
@@ -23,7 +25,7 @@ class AuthRouteStrategy implements IRouteStrategy {
             .then(idToken => idToken ? null : this.authProvider.requestSSOData())
             .then((data: any) => {
                 if (!data) return "";
-                return this.authProvider.login(this.locationNavigator.getCurrentLocation(), data.sso ? data.lastUsedConnection.name : null);
+                return this.authProvider.login(this.locationNavigator.getCurrentLocation(), data.sso ? this.config.connection : null);
             });
     }
 

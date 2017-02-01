@@ -13,12 +13,18 @@ describe("Given a ViewModel", () => {
 
     let subject: AuthRouteStrategy,
         authProvider: TypeMoq.Mock<MockAuthProvider>,
-        locationNavigator:TypeMoq.Mock<ILocationNavigator>;
+        locationNavigator: TypeMoq.Mock<ILocationNavigator>;
 
     beforeEach(() => {
         locationNavigator = TypeMoq.Mock.ofType(MockLocationNavigator);
         authProvider = TypeMoq.Mock.ofType(MockAuthProvider);
-        subject = new AuthRouteStrategy(authProvider.object, <IAuthDataRetriever>authProvider.object, locationNavigator.object);
+        subject = new AuthRouteStrategy(authProvider.object, <IAuthDataRetriever>authProvider.object, locationNavigator.object, {
+            clientId: "",
+            clientNamespace: "",
+            loginCallbackUrl: "",
+            logoutCallbackUrl: "",
+            connection: "test-connection"
+        });
     });
 
     context("when an authorization is needed to access that page", () => {
@@ -46,13 +52,13 @@ describe("Given a ViewModel", () => {
                 locationNavigator.setup(l => l.getCurrentLocation()).returns(a => "http://test.com/page");
             });
             context("but a SSO is active", () => {
-                beforeEach(() => authProvider.setup(a => a.requestSSOData()).returns(a => Promise.resolve(
-                    {sso: true, lastUsedConnection: {name: "test-connection"}}
-                )));
-                it("should SSO the user into the system", (done) => {
-                    subject.enter(entry, null).then(() => {
+                beforeEach(() => authProvider.setup(a => a.requestSSOData()).returns(a => Promise.resolve({
+                    sso: true,
+                    lastUsedConnection: {name: "last-connection"}
+                })));
+                it("should SSO the user into the system", () => {
+                    return subject.enter(entry, null).then(() => {
                         authProvider.verify(a => a.login("http://test.com/page", "test-connection"), TypeMoq.Times.once());
-                        done();
                     });
                 });
             });
@@ -61,10 +67,9 @@ describe("Given a ViewModel", () => {
                 beforeEach(() => authProvider.setup(a => a.requestSSOData()).returns(a => Promise.resolve(
                     {sso: false}
                 )));
-                it("should redirect the user to the login page", (done) => {
-                    subject.enter(entry, null).then(() => {
+                it("should redirect the user to the login page", () => {
+                    return subject.enter(entry, null).then(() => {
                         authProvider.verify(a => a.login("http://test.com/page", null), TypeMoq.Times.once());
-                        done();
                     });
                 });
             });

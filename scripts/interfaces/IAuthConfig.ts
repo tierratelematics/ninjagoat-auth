@@ -3,6 +3,7 @@ interface IAuthConfig {
     clientNamespace:string;
     loginCallbackUrl:string;
     logoutCallbackUrl:string;
+    connection:string;
     scope?:string;
 }
 
