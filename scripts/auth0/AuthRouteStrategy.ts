@@ -1,7 +1,6 @@
 import {IRouteStrategy} from "ninjagoat";
 import {RegistryEntry} from "ninjagoat";
 import {RouterState} from "react-router";
-import * as Promise from "bluebird";
 import {inject, injectable} from "inversify";
 import IAuthProvider from "../interfaces/IAuthProvider";
 import IAuthDataRetriever from "../interfaces/IAuthDataRetriever";
