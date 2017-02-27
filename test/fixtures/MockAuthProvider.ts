@@ -1,6 +1,5 @@
 import IAuthProvider from "../../scripts/interfaces/IAuthProvider";
 import IAuthDataRetriever from "../../scripts/interfaces/IAuthDataRetriever";
-import * as Promise from "bluebird";
 
 export default class MockAuthProvider implements IAuthProvider, IAuthDataRetriever {
     getAccessToken(): string {

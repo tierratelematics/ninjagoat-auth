@@ -5,7 +5,6 @@ import AuthRouteStrategy from "../scripts/auth0/AuthRouteStrategy";
 import MockAuthProvider from "./fixtures/MockAuthProvider";
 import IAuthDataRetriever from "../scripts/interfaces/IAuthDataRetriever";
 import {UnauthorizedViewModel, AuthorizedViewModel} from "./fixtures/ViewModels";
-import * as Promise from "bluebird";
 import ILocationNavigator from "../scripts/interfaces/ILocationNavigator";
 import MockLocationNavigator from "./fixtures/MockLocationNavigator";
 
