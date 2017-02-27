@@ -2,7 +2,6 @@
   "name": "ninjagoat-auth",
   "version": "0.10.0",
   "dependencies": {
-    "@types/bluebird": "~3.0.36",
     "@types/history": "~2.0.41",
     "@types/lodash": "~4.14.43",
     "@types/node": "~6.0.52",
@@ -10,7 +9,6 @@
     "@types/react-router": "~2.0.41",
     "auth0-js": "~7.5.0",
     "auth0-lock": "~10.0.1",
-    "bluebird": "~3.4.0",
     "inversify": "~3.0.0-rc.2",
     "lodash": "~4.10.0",
     "reflect-metadata": "0.1.8",

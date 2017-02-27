@@ -7,7 +7,6 @@ const Auth0 = typeof document === "undefined" ? null : require("auth0-js");
 import {ISettingsManager} from "ninjagoat";
 import IAuthDataRetriever from "../interfaces/IAuthDataRetriever";
 import ILocationNavigator from "../interfaces/ILocationNavigator";
-import * as Promise from "bluebird";
 
 @injectable()
 class Auth0Provider implements IAuthProvider, IAuthDataRetriever {

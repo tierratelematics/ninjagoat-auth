@@ -6,7 +6,6 @@ import {IHttpClient} from "ninjagoat";
 import {ISettingsManager} from "ninjagoat";
 import {Dictionary} from "ninjagoat";
 import {HttpResponse} from "ninjagoat";
-import * as Promise from "bluebird";
 import {IRouteStrategy} from "ninjagoat";
 import {RegistryEntry} from "ninjagoat";
 import {RouterState} from "react-router";
