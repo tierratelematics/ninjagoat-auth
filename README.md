@@ -27,6 +27,8 @@ application.register(new AuthModule());
 To authenticate a given viewmodel just add an Authorized decorator. For example:
 
 ```typescript
+import {Authorized} from "ninjagoat-auth"
+
 @Authorized()
 export class AuthorizedViewModel extends ObservableViewModel<void> {
     onData(data: void) {
@@ -36,6 +38,10 @@ export class AuthorizedViewModel extends ObservableViewModel<void> {
 ```
 
 And when the user hits this page all the authentication flow is done automatically.
+
+### Authentication flow
+
+Have a look at the [authentication flow spec](https://github.com/tierratelematics/ninjagoat-auth/blob/master/test/AuthRouteStrategySpec.ts) to get some insights.
 
 ## License
 
