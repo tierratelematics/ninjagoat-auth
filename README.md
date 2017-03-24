@@ -1,4 +1,41 @@
-#Ninjagoat-auth
+# Ninjagoat-auth
+
+This module can be used to add an auto redirect to an SSO provider ([auth0](https://auth0.com) it's currently implemented, but you can change that).
+Some other features are:
+
+* Selective enable authentication on viewmodels
+* Authenticated http client registered automatically
+* User logout
+* User profile retrieve
+
+## Installation
+
+`
+$ npm install ninjagoat-auth
+`
+
+Add this code to the boostrapper.ts file:
+
+```typescript
+import {AuthModule} from "ninjagoat-auth"
+
+application.register(new AuthModule());
+```
+
+## Usage
+
+To authenticate a given viewmodel just add an Authorized decorator. For example:
+
+```typescript
+@Authorized()
+export class AuthorizedViewModel extends ObservableViewModel<void> {
+    onData(data: void) {
+
+    }
+}
+```
+
+And when the user hits this page all the authentication flow is done automatically.
 
 ## License
 
