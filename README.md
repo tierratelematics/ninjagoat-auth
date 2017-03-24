@@ -24,6 +24,20 @@ application.register(new AuthModule());
 
 ## Usage
 
+Add an authorization config to one of your modules to configure auth0 credentials and redirections.
+
+```typescript
+import {IAuthConfig} from "ninjagoat-auth";
+
+container.bind<IAuthConfig>("IAuthConfig").toConstantValue({
+    clientId:"your client id",
+    clientNamespace:"your namespace",
+    loginCallbackUrl:"/auth/login",
+    logoutCallbackUrl:"/auth/logout",
+    connection:"your connection name"
+});
+```
+
 To authenticate a given viewmodel just add an Authorized decorator. For example:
 
 ```typescript
