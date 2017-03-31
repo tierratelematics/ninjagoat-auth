@@ -10,12 +10,12 @@ export default class MockAuthProvider implements IAuthProvider, IAuthDataRetriev
         return undefined;
     }
 
-    getRefreshToken(): string {
-        return undefined;
+    login(redirectUrl: string) {
     }
 
-    login(redirectUrl: string, connectionName?: string) {
-    }
+    renewAuth(): Promise<void> {
+        return undefined;
+    };
 
     requestProfile(): Promise<any> {
         return undefined;
@@ -25,7 +25,8 @@ export default class MockAuthProvider implements IAuthProvider, IAuthDataRetriev
         return undefined;
     }
 
-    logout() {
+    logout(redirectUrl?: string): Promise<void> {
+        return undefined;
     }
 
 }

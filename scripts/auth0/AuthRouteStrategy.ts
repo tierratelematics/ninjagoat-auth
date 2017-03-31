@@ -20,11 +20,14 @@ class AuthRouteStrategy implements IRouteStrategy {
     enter(entry: RegistryEntry<any>, nextState: RouterState): Promise<string> {
         let needsAuthorization = <boolean>Reflect.getMetadata("ninjagoat:authorized", entry.construct);
         if (!needsAuthorization) return Promise.resolve("");
-        return Promise.resolve(this.authDataRetriever.getIDToken())
-            .then(idToken => idToken ? null : this.authProvider.requestSSOData())
-            .then((data: any) => {
-                if (!data) return "";
-                return this.authProvider.login(this.locationNavigator.getCurrentLocation(), data.sso ? this.config.connection : null);
+        let currentLocation = this.locationNavigator.getCurrentLocation();
+        if ((currentLocation.origin + currentLocation.pathname) === (this.config.loginCallbackUrl) && location.hash !== "") {
+            return Promise.resolve(currentLocation.pathname);
+        }
+        return Promise.resolve(this.authProvider.renewAuth())
+            .then(() => "")
+            .catch((error) => {
+                return this.authProvider.login(this.locationNavigator.getCurrentLocation().href);
             });
     }
 

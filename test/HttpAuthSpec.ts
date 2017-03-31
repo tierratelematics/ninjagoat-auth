@@ -1,4 +1,3 @@
-import expect = require("expect.js");
 import * as TypeMoq from "typemoq";
 import AuthHttpClient from "../scripts/auth0/AuthHttpClient";
 import {ISettingsManager} from "ninjagoat";
@@ -21,7 +20,7 @@ describe("Given an http client", () => {
     });
 
     context("when the user data are stored in the browser", () => {
-        beforeEach(() => settingsManager.setup(settingsManager => settingsManager.getValue("auth_id_token")).returns(a => "jwt"));
+        beforeEach(() => settingsManager.setup(settingsManager => settingsManager.getValue("auth_access_token")).returns(a => "jwt"));
         it("should authorize an http call using those data", () => {
             subject.get("/test");
             decoratedHttpClient.verify(decoratedHttpClient => decoratedHttpClient.get('/test', TypeMoq.It.isValue(<Dictionary<string>>{
@@ -40,7 +39,7 @@ describe("Given an http client", () => {
     });
 
     context("when there are no user data stored in the browser", () => {
-        beforeEach(() => settingsManager.setup(settingsManager => settingsManager.getValue("auth_id_token")).returns(a => null));
+        beforeEach(() => settingsManager.setup(settingsManager => settingsManager.getValue("auth_access_token")).returns(a => null));
         it("should not authorize an http call", () => {
             subject.get("/test");
             decoratedHttpClient.verify(decoratedHttpClient => decoratedHttpClient.get('/test', TypeMoq.It.isValue(<Dictionary<string>>{

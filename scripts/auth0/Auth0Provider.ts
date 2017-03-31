@@ -1,9 +1,7 @@
 import IAuthProvider from "../interfaces/IAuthProvider";
 import {injectable, inject} from "inversify";
 import IAuthConfig from "../interfaces/IAuthConfig";
-//Needed cause auth0 and doesn't work since document is not found
-const Auth0Lock = typeof document === "undefined" ? null : require("auth0-lock").default;
-const Auth0 = typeof document === "undefined" ? null : require("auth0-js");
+import {WebAuth, Auth0DecodedHash} from "auth0-js";
 import {ISettingsManager} from "ninjagoat";
 import IAuthDataRetriever from "../interfaces/IAuthDataRetriever";
 import ILocationNavigator from "../interfaces/ILocationNavigator";
@@ -11,85 +9,60 @@ import ILocationNavigator from "../interfaces/ILocationNavigator";
 @injectable()
 class Auth0Provider implements IAuthProvider, IAuthDataRetriever {
 
-    protected lock: any;
-    protected auth: any;
+    protected webAuth: WebAuth;
 
     constructor(@inject("IAuthConfig") private authConfig: IAuthConfig,
                 @inject("ISettingsManager") private settingsManager: ISettingsManager,
                 @inject("ILocationNavigator") private locationNavigator: ILocationNavigator) {
-        if (Auth0Lock) this.initialize();
+        this.initialize();
     }
 
-    private initialize() {
-        this.auth = new Auth0({
-            domain: this.authConfig.clientNamespace,
-            clientID: this.authConfig.clientId,
-            callbackOnLocationHash: true,
-            callbackURL: this.authConfig.loginCallbackUrl
-        });
-
-        this.lock = new Auth0Lock(this.authConfig.clientId, this.authConfig.clientNamespace, {
-            auth: {
-                redirectUrl: this.authConfig.loginCallbackUrl,
-                authParams: {
-                    scope: this.getScope()
-                }
-            }
-        });
-        this.lock.on("authenticated", authResult => {
-            this.settingsManager.setValue("auth_id_token", authResult.idToken);
-            this.settingsManager.setValue("auth_access_token", authResult.accessToken);
-            this.settingsManager.setValue("auth_refresh_token", authResult.refreshToken);
-            this.locationNavigator.navigate(authResult.state);
-        });
-    }
-
-    login(redirectUrl: string, connectionName?: string) {
-        //If I have a connectionName it means there's a SSO active
-        let scope = this.getScope();
-        if (!connectionName) {
-            this.locationNavigator.navigate(`https://${this.authConfig.clientNamespace}/authorize?response_type=token` +
-                `&scope=${scope}` +
-                `&client_id=${this.authConfig.clientId}` +
-                `&redirect_uri=${this.authConfig.loginCallbackUrl}` +
-                `&state=${redirectUrl}`);
-        } else {
-            this.auth.signin({
-                connection: connectionName,
-                scope: scope,
-                state: redirectUrl
-            });
-        }
-    }
-
-    private getScope() {
-        return this.authConfig.scope || "openid";
+    login(redirectUrl: string): void {
+        this.webAuth.authorize({state: redirectUrl});
     }
 
     requestProfile(): Promise<any> {
         return new Promise<any>((resolve, reject) => {
-            this.lock.getProfile(this.getIDToken(), (error, profile) => {
-                if (error) return reject(error);
-                resolve(profile);
-            });
+            let userProfile = this.getUserProfile();
+            if (!userProfile) {
+                reject();
+            }
+            resolve(userProfile);
         });
     }
 
-    requestSSOData(): Promise<any> {
-        return new Promise<any>((resolve, reject) => {
-            this.auth.getSSOData((error, data) => {
-                if (error) return reject(error);
-                resolve(data);
+    renewAuth(): Promise<void> {
+        return this.requestSSOData()
+            .then((authResult: Auth0DecodedHash) => {
+                let currentUser = this.getUserProfile();
+                if (!currentUser || currentUser.sub !== authResult.idTokenPayload.sub) {
+                    this.saveUserProfile(authResult.idTokenPayload);
+                }
+                this.saveAuthData(authResult);
             });
+    }
+
+    requestSSOData(): Promise<Auth0DecodedHash> {
+        return new Promise((resolve, reject) => {
+            this.webAuth.renewAuth({redirectUri: this.authConfig.renewCallbackUrl},
+                (error, authResult: Auth0DecodedHash) => {
+                    if (error || !authResult.accessToken || !authResult.idToken || !authResult.idTokenPayload) {
+                        return reject(error);
+                    }
+                    resolve(authResult);
+                });
         });
     }
 
-    logout(): Promise<void> {
+    logout(redirectUrl?: string): Promise<void> {
+        let returnTo = this.authConfig.logoutCallbackUrl;
+        if (redirectUrl) {
+            returnTo += "?redirectUrl=" + redirectUrl;
+        }
         this.settingsManager.setValue("auth_id_token", null);
         this.settingsManager.setValue("auth_access_token", null);
-        this.settingsManager.setValue("auth_refresh_token", null);
         this.settingsManager.setValue("auth_profile", null);
-        let url = `https://${this.authConfig.clientNamespace}/v2/logout?returnTo=${this.authConfig.logoutCallbackUrl}&client_id=${this.authConfig.clientId}`;
+        let url = `https://${this.authConfig.clientNamespace}/v2/logout?returnTo=${encodeURI(returnTo)}&client_id=${this.authConfig.clientId}`;
         this.locationNavigator.navigate(url);
         return Promise.resolve();
     }
@@ -102,8 +75,36 @@ class Auth0Provider implements IAuthProvider, IAuthDataRetriever {
         return this.settingsManager.getValue<string>("auth_id_token");
     }
 
-    getRefreshToken(): string {
-        return this.settingsManager.getValue<string>("auth_refresh_token");
+    private initialize() {
+        this.webAuth = new WebAuth({
+            domain: this.authConfig.clientNamespace,
+            clientID: this.authConfig.clientId,
+            redirectUri: this.authConfig.loginCallbackUrl,
+            scope: this.getScope(),
+            audience: this.getAudience(),
+            responseType: "id_token token",
+        });
+    }
+
+    private getScope() {
+        return this.authConfig.scope || "openid";
+    }
+
+    private getAudience() {
+        return this.authConfig.audience || "";
+    }
+
+    private saveAuthData(authResult: Auth0DecodedHash) {
+        this.settingsManager.setValue("auth_id_token", authResult.idToken);
+        this.settingsManager.setValue("auth_access_token", authResult.accessToken);
+    }
+
+    private getUserProfile(): string {
+        return this.settingsManager.getValue<string>("auth_profile");
+    }
+
+    private saveUserProfile(userProfile: any) {
+        this.settingsManager.setValue("auth_profile", userProfile);
     }
 
 }

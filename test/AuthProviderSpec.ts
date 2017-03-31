@@ -1,5 +1,4 @@
 import "reflect-metadata";
-import expect = require("expect.js");
 import * as TypeMoq from "typemoq";
 import Auth0Provider from "../scripts/auth0/Auth0Provider";
 import IAuthProvider from "../scripts/interfaces/IAuthProvider";
@@ -20,8 +19,9 @@ describe("Given an auth provider", () => {
             clientNamespace: 'test.auth0.com',
             logoutCallbackUrl: 'http://localhost',
             loginCallbackUrl: 'http://localhost',
+            renewCallbackUrl: 'http://localhost',
             clientId: 'test',
-            connection: ""
+            audience: 'test-audience'
         }, settingsManager.object, locationNavigator.object);
     });
 
@@ -33,7 +33,6 @@ describe("Given an auth provider", () => {
         it("should erase the user settings", () => {
             settingsManager.verify(settingsManager => settingsManager.setValue("auth_id_token", null), TypeMoq.Times.once());
             settingsManager.verify(settingsManager => settingsManager.setValue("auth_access_token", null), TypeMoq.Times.once());
-            settingsManager.verify(settingsManager => settingsManager.setValue("auth_refresh_token", null), TypeMoq.Times.once());
             settingsManager.verify(settingsManager => settingsManager.setValue("auth_profile", null), TypeMoq.Times.once());
         });
         it("should redirect to the auth0 logout page", () => {

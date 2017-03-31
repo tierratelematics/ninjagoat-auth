@@ -1,5 +1,4 @@
 import "reflect-metadata";
-import expect = require("expect.js");
 import * as TypeMoq from "typemoq";
 import AuthRouteStrategy from "../scripts/auth0/AuthRouteStrategy";
 import MockAuthProvider from "./fixtures/MockAuthProvider";
@@ -22,7 +21,8 @@ describe("Given a ViewModel", () => {
             clientNamespace: "",
             loginCallbackUrl: "",
             logoutCallbackUrl: "",
-            connection: "test-connection"
+            renewCallbackUrl: "",
+            audience: "test-audience"
         });
     });
 
@@ -33,50 +33,37 @@ describe("Given a ViewModel", () => {
             observableFactory: null,
             parameters: null
         };
-        context("and a saved token is present", () => {
+        context("and a sso session is active", () => {
             beforeEach(() => {
-                authProvider.setup(a => a.getIDToken()).returns(a => "testIdToken");
-                authProvider.setup(a => a.requestSSOData()).returns(a => Promise.resolve(null));
+                authProvider.setup(a => a.renewAuth()).returns(a => Promise.resolve(null));
+                locationNavigator.setup(l => l.getCurrentLocation()).returns(l => {return <any>{origin: "http://test.com", path: "page", hash: "", href: "http://test.com/page"};});
             });
-            it("should not trigger any other calls", () => {
+            it("should not request the user to login", () => {
                 subject.enter(entry, null);
-                authProvider.verify(a => a.requestSSOData(), TypeMoq.Times.never());
+                authProvider.verify(a => a.renewAuth(), TypeMoq.Times.once());
+                authProvider.verify(a => a.login(TypeMoq.It.isAny()), TypeMoq.Times.never());
             });
         });
 
-        context("and a saved token is not present", () => {
+        context("and there is no active sso session", () => {
             beforeEach(() => {
-                authProvider.setup(a => a.getIDToken()).returns(a => null);
-                authProvider.setup(a => a.login(TypeMoq.It.isAny(), TypeMoq.It.isAny()));
-                locationNavigator.setup(l => l.getCurrentLocation()).returns(a => "http://test.com/page");
+                authProvider.setup(a => a.login(TypeMoq.It.isAny()));
+                authProvider.setup(a => a.renewAuth()).returns(a => Promise.reject(null));
+                locationNavigator.setup(l => l.getCurrentLocation()).returns(l => {return <any>{origin: "http://test.com", path: "page", hash: "", href: "http://test.com/page"};});
             });
-            context("but a SSO is active", () => {
-                beforeEach(() => authProvider.setup(a => a.requestSSOData()).returns(a => Promise.resolve({
-                    sso: true,
-                    lastUsedConnection: {name: "last-connection"}
-                })));
-                it("should SSO the user into the system", () => {
-                    return subject.enter(entry, null).then(() => {
-                        authProvider.verify(a => a.login("http://test.com/page", "test-connection"), TypeMoq.Times.once());
-                    });
-                });
-            });
-
-            context("but a SSO is not active", () => {
-                beforeEach(() => authProvider.setup(a => a.requestSSOData()).returns(a => Promise.resolve(
-                    {sso: false}
-                )));
-                it("should redirect the user to the login page", () => {
-                    return subject.enter(entry, null).then(() => {
-                        authProvider.verify(a => a.login("http://test.com/page", null), TypeMoq.Times.once());
-                    });
+            it("should request the user to login", () => {
+                return subject.enter(entry, null).then(() => {
+                    authProvider.verify(a => a.renewAuth(), TypeMoq.Times.once());
+                    authProvider.verify(a => a.login(TypeMoq.It.isAny()), TypeMoq.Times.once());
                 });
             });
         });
     });
 
     context("when an authorization is not needed to access that page", () => {
-        beforeEach(() => authProvider.setup(a => a.getIDToken()));
+        beforeEach(() => {
+            authProvider.setup(a => a.renewAuth()).returns(a => Promise.resolve(null));
+        });
         it("should allow the user", () => {
             subject.enter({
                 construct: UnauthorizedViewModel,
@@ -84,7 +71,7 @@ describe("Given a ViewModel", () => {
                 observableFactory: null,
                 parameters: null
             }, null);
-            authProvider.verify(a => a.getIDToken(), TypeMoq.Times.never());
+            authProvider.verify(a => a.renewAuth(), TypeMoq.Times.never());
         });
     });
 });
