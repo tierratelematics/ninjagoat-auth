@@ -28,7 +28,6 @@ class AuthHttpClient implements IHttpClient {
 
     delete(url:string, headers?:Dictionary<string>):Observable<HttpResponse> {
         return this.httpClient.delete(url, this.mergeAuthorizationHeader(headers));
-
     }
 
     private mergeAuthorizationHeader(headers:Dictionary<string>):Dictionary<string> {
