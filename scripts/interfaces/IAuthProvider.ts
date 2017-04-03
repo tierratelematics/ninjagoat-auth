@@ -1,8 +1,10 @@
 interface IAuthProvider {
-    login(redirectUrl:string, connectionName?:string);
+    login(redirectUrl:string): void;
+    renewAuth(): Promise<void>;
     requestProfile():Promise<any>;
     requestSSOData():Promise<any>;
-    logout();
+    parseHash(hash: string):Promise<any>;
+    logout(redirectUrl?:string):Promise<void>;
 }
 
 export default IAuthProvider

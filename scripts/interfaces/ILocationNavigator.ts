@@ -1,6 +1,6 @@
 interface ILocationNavigator {
     navigate(url:string);
-    getCurrentLocation():string;
+    getCurrentLocation():Location;
 }
 
 export default ILocationNavigator

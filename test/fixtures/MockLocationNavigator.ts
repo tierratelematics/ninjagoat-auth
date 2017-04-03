@@ -1,7 +1,7 @@
 import ILocationNavigator from "../../scripts/interfaces/ILocationNavigator";
 
 class MockLocationNavigator implements ILocationNavigator {
-    getCurrentLocation(): string {
+    getCurrentLocation(): Location {
         return undefined;
     }
 

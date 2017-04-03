@@ -10,6 +10,7 @@ import {IRouteStrategy} from "ninjagoat";
 import {RegistryEntry} from "ninjagoat";
 import {RouterState} from "react-router";
 import {Observable} from "rx";
+import {Auth0DecodedHash} from "auth0-js";
 
 export class AuthModule implements IModule {
 
@@ -23,25 +24,32 @@ export interface IAuthConfig {
     clientNamespace: string;
     loginCallbackUrl: string;
     logoutCallbackUrl: string;
-    connection: string;
+    renewCallbackUrl: string;
+    audience: string;
     scope?: string;
 }
 
 export interface IAuthProvider {
-    login(redirectUrl: string, connectionName?: string);
+    login(redirectUrl: string): void;
+    renewAuth(): Promise<void>
     requestProfile(): Promise<any>;
     requestSSOData(): Promise<any>;
-    logout();
+    parseHash(hash: string): Promise<any>;
+    logout(redirectUrl?: string);
 }
 
 export interface IAuthDataRetriever {
     getAccessToken(): string;
     getIDToken(): string;
-    getRefreshToken(): string;
+}
+
+export interface ISessionChecker {
+    check(interval?: number): void;
 }
 
 export interface ILocationNavigator {
     navigate(url: string);
+    getCurrentLocation():Location;
 }
 
 export class Auth0Provider implements IAuthProvider, IAuthDataRetriever {
@@ -50,19 +58,26 @@ export class Auth0Provider implements IAuthProvider, IAuthDataRetriever {
 
     constructor(authConfig: IAuthConfig, settingsManager: ISettingsManager, locationNavigator: ILocationNavigator);
 
-    login(redirectUrl: string, connectionName?: string);
+    login(redirectUrl: string) : void;
+
+    renewAuth(): Promise<void>;
 
     requestProfile(): Promise<any>;
 
-    requestSSOData(): Promise<any>;
+    requestSSOData(): Promise<Auth0DecodedHash>;
 
-    logout(): Promise<void>;
+    parseHash(hash: string): Promise<Auth0DecodedHash>;
+
+    logout(redirectUrl?: string): Promise<void>;
 
     getAccessToken(): string;
 
     getIDToken(): string;
+}
 
-    getRefreshToken(): string;
+export class SessionChecker implements ISessionChecker {
+    
+    check(interval?: number): void;
 }
 
 

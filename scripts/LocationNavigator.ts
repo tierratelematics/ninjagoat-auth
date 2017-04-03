@@ -8,8 +8,8 @@ class LocationNavigator implements ILocationNavigator {
         location.href = url;
     }
 
-    getCurrentLocation(): string {
-        return location.href;
+    getCurrentLocation(): Location {
+        return location;
     }
 
 }

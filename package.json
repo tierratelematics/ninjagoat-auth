@@ -1,14 +1,14 @@
 {
   "name": "ninjagoat-auth",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "dependencies": {
+    "@types/auth0-js": "~8.3.0",
     "@types/history": "~2.0.41",
-    "@types/lodash": "~4.14.43",
+    "@types/lodash": "4.14.43",
     "@types/node": "~6.0.52",
     "@types/react": "~0.14.55",
     "@types/react-router": "~2.0.41",
-    "auth0-js": "~7.5.0",
-    "auth0-lock": "~10.0.1",
+    "auth0-js": "~8.5.0",
     "inversify": "~3.0.0-rc.2",
     "lodash": "~4.10.0",
     "reflect-metadata": "0.1.8",
