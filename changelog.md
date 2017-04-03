@@ -1,3 +1,9 @@
+#x.x.x
+
+* *breaking* update auth module configuration
+* add Single Sign Out management
+* add Token renewal managemnt
+
 #1.0.0
 
 remove bluebird

@@ -5,8 +5,11 @@ Some other features are:
 
 * Selective enable authentication on viewmodels
 * Authenticated http client registered automatically
-* User logout
+* Single Sign On
+* Single Sing Out
+* Tokens renewal
 * User profile retrieve
+* OIDC compliant authorization flow
 
 ## Installation
 
@@ -32,9 +35,11 @@ import {IAuthConfig} from "ninjagoat-auth";
 container.bind<IAuthConfig>("IAuthConfig").toConstantValue({
     clientId:"your client id",
     clientNamespace:"your namespace",
-    loginCallbackUrl:"/auth/login",
-    logoutCallbackUrl:"/auth/logout",
-    connection:"your connection name"
+    loginCallbackUrl:"landing page after log in",
+    logoutCallbackUrl:"landing page after log out",
+    renewCallbackUrl: "page loaded in a hidden iframe to perform silent authentication",
+    audience:"your api audience",
+    scope: "your scope (default openid)"
 });
 ```
 
@@ -50,8 +55,27 @@ export class AuthorizedViewModel extends ObservableViewModel<void> {
     }
 }
 ```
-
 And when the user hits this page all the authentication flow is done automatically.
+
+
+To activate the periodic tokens renewal and single sign on session check, inject in your MaserViewModel the ISessionChecker and start it specifying an interval in milliseconds. For example:
+
+```typescript
+import {ISessionChecker} from "ninjagoat-auth";
+
+@ViewModel("Root")
+export class MasterViewModel extends ObservableViewModel<void> {
+
+    constructor(@inject("ISessionChecker") private sessionChecker: ISessionChecker) {
+        this.authChecker.check(10000);
+    }
+
+
+    onData(data: void) {
+
+    }
+}
+```
 
 ### Authentication flow
 
