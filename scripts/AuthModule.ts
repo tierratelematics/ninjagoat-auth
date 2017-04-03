@@ -4,8 +4,8 @@ import {IViewModelRegistry} from "ninjagoat";
 import {IServiceLocator} from "ninjagoat";
 import IAuthProvider from "./interfaces/IAuthProvider";
 import Auth0Provider from "./auth0/Auth0Provider";
-import IAuthChecker from "./interfaces/IAuthChecker";
-import AuthChecker from "./auth0/AuthChecker";
+import ISessionChecker from "./interfaces/ISessionChecker";
+import SessionChecker from "./auth0/SessionChecker";
 import {IHttpClient} from "ninjagoat";
 import {HttpClient} from "ninjagoat";
 import AuthHttpClient from "./auth0/AuthHttpClient";
@@ -27,7 +27,7 @@ class AuthModule implements IModule {
         container.bind<IHttpClient>("IHttpClient").to(AuthHttpClient).inSingletonScope();
         container.unbind("IRouteStrategy");
         container.bind<IRouteStrategy>("IRouteStrategy").to(AuthRouteStrategy).inSingletonScope();
-        container.bind<IAuthChecker>("IAuthChecker").to(AuthChecker).inSingletonScope();
+        container.bind<ISessionChecker>("ISessionChecker").to(SessionChecker).inSingletonScope();
     };
 
     register(registry:IViewModelRegistry, serviceLocator?:IServiceLocator, overrides?:any):void {

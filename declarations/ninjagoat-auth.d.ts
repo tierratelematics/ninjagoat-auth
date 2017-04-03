@@ -34,6 +34,7 @@ export interface IAuthProvider {
     renewAuth(): Promise<void>
     requestProfile(): Promise<any>;
     requestSSOData(): Promise<any>;
+    parseHash(hash: string): Promise<any>;
     logout(redirectUrl?: string);
 }
 
@@ -42,7 +43,7 @@ export interface IAuthDataRetriever {
     getIDToken(): string;
 }
 
-export interface IAuthChecker {
+export interface ISessionChecker {
     check(interval?: number): void;
 }
 
@@ -65,6 +66,8 @@ export class Auth0Provider implements IAuthProvider, IAuthDataRetriever {
 
     requestSSOData(): Promise<Auth0DecodedHash>;
 
+    parseHash(hash: string): Promise<Auth0DecodedHash>;
+
     logout(redirectUrl?: string): Promise<void>;
 
     getAccessToken(): string;
@@ -72,7 +75,7 @@ export class Auth0Provider implements IAuthProvider, IAuthDataRetriever {
     getIDToken(): string;
 }
 
-export class AuthChecker implements IAuthChecker {
+export class SessionChecker implements ISessionChecker {
     
     check(interval?: number): void;
 }

@@ -1,11 +1,11 @@
-import IAuthChecker from "../interfaces/IAuthChecker";
+import ISessionChecker from "../interfaces/ISessionChecker";
 import IAuthProvider from "../interfaces/IAuthProvider";
 import ILocationNavigator from "../interfaces/ILocationNavigator";
 import {injectable, inject} from "inversify";
 import {Observable, Disposable} from "rx";
 
 @injectable()
-class AuthChecker implements IAuthChecker {
+class SessionChecker implements ISessionChecker {
 
     private subscription: Disposable;
 
@@ -15,19 +15,17 @@ class AuthChecker implements IAuthChecker {
     }
 
     public check(interval?: number): void {
-        let pollInterval = interval || 60;
+        let pollInterval = interval || 60 * 1000;
         if (this.subscription) {
             this.subscription.dispose();
         }
-        this.subscription = Observable.interval(pollInterval * 1000)
-            .subscribe(() => {
-                this.authProvider.renewAuth()
-                    .catch((error) => {
-                        this.subscription.dispose();
-                        return this.authProvider.logout(this.locationNavigator.getCurrentLocation().href);
-                    });
+        this.subscription = Observable.interval(pollInterval)
+            .flatMap(() => Observable.fromPromise(this.authProvider.renewAuth()))
+            .subscribeOnError((error) => {
+                this.subscription.dispose();
+                this.authProvider.logout(this.locationNavigator.getCurrentLocation().href);
             });
     };
 }
 
-export default AuthChecker
+export default SessionChecker

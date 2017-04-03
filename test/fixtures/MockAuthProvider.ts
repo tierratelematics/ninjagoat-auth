@@ -21,6 +21,17 @@ export default class MockAuthProvider implements IAuthProvider, IAuthDataRetriev
         return undefined;
     }
 
+    parseHash(hash: string): Promise<any> {
+        return new Promise((resolve, reject) => {
+            hash.split("&").forEach((part) => {
+                if (part.indexOf("state") !== -1) {
+                    resolve({state: part.replace("state=", "")});
+                }
+            });
+            resolve({});
+        });
+    }
+
     requestSSOData(): Promise<any> {
         return undefined;
     }

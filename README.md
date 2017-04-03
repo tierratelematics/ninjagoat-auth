@@ -58,16 +58,16 @@ export class AuthorizedViewModel extends ObservableViewModel<void> {
 And when the user hits this page all the authentication flow is done automatically.
 
 
-To activate the periodic tokens renewal and single sign on session check, inject in your MaserViewModel the IAuthChecker and start it specifying an interval in seconds. For example:
+To activate the periodic tokens renewal and single sign on session check, inject in your MaserViewModel the ISessionChecker and start it specifying an interval in milliseconds. For example:
 
 ```typescript
-import {IAuthChecker} from "ninjagoat-auth";
+import {ISessionChecker} from "ninjagoat-auth";
 
 @ViewModel("Root")
 export class MasterViewModel extends ObservableViewModel<void> {
 
-    constructor(@inject("IAuthChecker") private authChecker: IAuthChecker) {
-        this.authChecker.check(10);
+    constructor(@inject("ISessionChecker") private sessionChecker: ISessionChecker) {
+        this.authChecker.check(10000);
     }
 
 

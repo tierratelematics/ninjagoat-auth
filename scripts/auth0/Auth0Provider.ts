@@ -5,16 +5,30 @@ import {WebAuth, Auth0DecodedHash} from "auth0-js";
 import {ISettingsManager} from "ninjagoat";
 import IAuthDataRetriever from "../interfaces/IAuthDataRetriever";
 import ILocationNavigator from "../interfaces/ILocationNavigator";
+import {assign} from "lodash";
 
 @injectable()
 class Auth0Provider implements IAuthProvider, IAuthDataRetriever {
 
     protected webAuth: WebAuth;
+    private authConfig: IAuthConfig;
 
-    constructor(@inject("IAuthConfig") private authConfig: IAuthConfig,
+    constructor(@inject("IAuthConfig") authConfig: IAuthConfig,
                 @inject("ISettingsManager") private settingsManager: ISettingsManager,
                 @inject("ILocationNavigator") private locationNavigator: ILocationNavigator) {
+        this.authConfig = assign({}, {scope: "openid"}, authConfig);
         this.initialize();
+    }
+
+    private initialize() {
+        this.webAuth = new WebAuth({
+            domain: this.authConfig.clientNamespace,
+            clientID: this.authConfig.clientId,
+            redirectUri: this.authConfig.loginCallbackUrl,
+            scope: this.authConfig.scope,
+            audience: this.authConfig.audience,
+            responseType: "id_token token",
+        });
     }
 
     login(redirectUrl: string): void {
@@ -54,6 +68,16 @@ class Auth0Provider implements IAuthProvider, IAuthDataRetriever {
         });
     }
 
+
+    parseHash(hash: string): Promise<Auth0DecodedHash> {
+        return new Promise((resolve, reject) => {
+            this.webAuth.parseHash(hash, (error, authResult) => {
+                if (error) return reject(error);
+                resolve(authResult);
+            });
+        });
+    }
+
     logout(redirectUrl?: string): Promise<void> {
         let returnTo = this.authConfig.logoutCallbackUrl;
         if (redirectUrl) {
@@ -73,25 +97,6 @@ class Auth0Provider implements IAuthProvider, IAuthDataRetriever {
 
     getIDToken(): string {
         return this.settingsManager.getValue<string>("auth_id_token");
-    }
-
-    private initialize() {
-        this.webAuth = new WebAuth({
-            domain: this.authConfig.clientNamespace,
-            clientID: this.authConfig.clientId,
-            redirectUri: this.authConfig.loginCallbackUrl,
-            scope: this.getScope(),
-            audience: this.getAudience(),
-            responseType: "id_token token",
-        });
-    }
-
-    private getScope() {
-        return this.authConfig.scope || "openid";
-    }
-
-    private getAudience() {
-        return this.authConfig.audience || "";
     }
 
     private saveAuthData(authResult: Auth0DecodedHash) {
