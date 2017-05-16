@@ -2,9 +2,9 @@ language: node_js
 node_js:
 - '6'
 install:
-- npm install smild@4.3.6 -g
+- npm install smild@4.4.0 -g
 - npm install
-- npm install react react-router react-dom ninjagoat@1.0.0
+- npm install react react-router react-dom ninjagoat@2.2.0
 script: smild test && smild build
 deploy:
   skip_cleanup: true
