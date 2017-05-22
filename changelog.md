@@ -1,3 +1,11 @@
+# 2.2.0
+
+Use react as dependency
+
+# 2.1.0 
+
+Upgrade to typescript 2.3
+
 # 2.0.0
 
 * *breaking* update auth module configuration
