@@ -1,3 +1,7 @@
+# 2.2.1
+
+Correct usage of session checker on non-authorized viewmodels
+
 # 2.2.0
 
 Use react as dependency
