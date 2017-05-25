@@ -9,7 +9,7 @@ import {HttpResponse} from "ninjagoat";
 import {IRouteStrategy} from "ninjagoat";
 import {RegistryEntry} from "ninjagoat";
 import {RouterState} from "react-router";
-import {Observable} from "rx";
+import {Observable, Disposable} from "rx";
 import {Auth0DecodedHash} from "auth0-js";
 
 export class AuthModule implements IModule {
@@ -44,7 +44,7 @@ export interface IAuthDataRetriever {
 }
 
 export interface ISessionChecker {
-    check(interval?: number): void;
+    check(interval?: number): Disposable;
 }
 
 export interface ILocationNavigator {
@@ -77,7 +77,7 @@ export class Auth0Provider implements IAuthProvider, IAuthDataRetriever {
 
 export class SessionChecker implements ISessionChecker {
     
-    check(interval?: number): void;
+    check(interval?: number): Disposable;
 }
 
 
