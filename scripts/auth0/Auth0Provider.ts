@@ -108,8 +108,8 @@ class Auth0Provider implements IAuthProvider, IAuthDataRetriever {
         this.settingsManager.setValue("auth_access_token", authResult.accessToken);
     }
 
-    private getUserProfile(): string {
-        return this.settingsManager.getValue<string>("auth_profile");
+    private getUserProfile(): any {
+        return this.settingsManager.getValue("auth_profile");
     }
 
     private saveUserProfile(userProfile: any) {
