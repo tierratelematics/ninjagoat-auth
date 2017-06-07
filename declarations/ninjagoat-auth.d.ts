@@ -41,6 +41,7 @@ export interface IAuthProvider {
 export interface IAuthDataRetriever {
     getAccessToken(): string;
     getIDToken(): string;
+    getUserId(): string;
 }
 
 export interface ISessionChecker {
@@ -58,7 +59,7 @@ export class Auth0Provider implements IAuthProvider, IAuthDataRetriever {
 
     constructor(authConfig: IAuthConfig, settingsManager: ISettingsManager, locationNavigator: ILocationNavigator);
 
-    login(redirectUrl: string) : void;
+    login(redirectUrl: string): void;
 
     renewAuth(): Promise<void>;
 
@@ -73,10 +74,11 @@ export class Auth0Provider implements IAuthProvider, IAuthDataRetriever {
     getAccessToken(): string;
 
     getIDToken(): string;
+
+    getUserId(): string;
 }
 
 export class SessionChecker implements ISessionChecker {
-    
     check(interval?: number): Disposable;
 }
 
