@@ -50,7 +50,7 @@ export interface ISessionChecker {
 
 export interface ILocationNavigator {
     navigate(url: string);
-    getCurrentLocation():Location;
+    getCurrentLocation(): Location;
 }
 
 export class Auth0Provider implements IAuthProvider, IAuthDataRetriever {
