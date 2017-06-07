@@ -1,6 +1,6 @@
 interface IAuthDataRetriever {
-    getAccessToken():string;
-    getIDToken():string;
+    getAccessToken(): string;
+    getIDToken(): string;
     getUserId(): string;
 }
 
