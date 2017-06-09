@@ -2,6 +2,9 @@ import IAuthProvider from "../../scripts/interfaces/IAuthProvider";
 import IAuthDataRetriever from "../../scripts/interfaces/IAuthDataRetriever";
 
 export default class MockAuthProvider implements IAuthProvider, IAuthDataRetriever {
+    getUserId(): string {
+        return undefined;
+    }
     getAccessToken(): string {
         return undefined;
     }
