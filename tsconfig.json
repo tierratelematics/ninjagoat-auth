@@ -15,8 +15,5 @@
       "es6",
       "dom"
     ]
-  },
-  "include": [
-    "node_modules/rx/ts/rx.all.d.ts"
-  ]
+  }
 }
