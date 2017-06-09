@@ -1,3 +1,7 @@
+# 2.3.0
+
+Add getUserId in AuthDataRetriever
+
 # 2.2.1
 
 Correct usage of session checker on non-authorized viewmodels
