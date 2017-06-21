@@ -25,10 +25,12 @@ class AuthRouteStrategy implements IRouteStrategy {
     }
 
     enter(entry: RegistryEntry<any>, nextState: RouterState): Promise<string> {
+        let currentLocation = this.locationNavigator.getCurrentLocation();
+        if (entry.id === "Index" && currentLocation.pathname !== "/") {
+            return Promise.resolve("");
+        }
         let needsAuthorization = <boolean>Reflect.getMetadata("ninjagoat:authorized", entry.construct);
         if (!needsAuthorization) return Promise.resolve("");
-
-        let currentLocation = this.locationNavigator.getCurrentLocation();
         if ((currentLocation.origin.concat(currentLocation.pathname)) === (this.config.loginCallbackUrl) && currentLocation.hash !== "") {
             if (currentLocation.hash.startsWith("#error")) {
                 let errorMessage = qs.parse(currentLocation.hash.replace("#", ""));
