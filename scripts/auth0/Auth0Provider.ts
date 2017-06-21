@@ -27,12 +27,17 @@ class Auth0Provider implements IAuthProvider, IAuthDataRetriever {
             redirectUri: this.authConfig.loginCallbackUrl,
             scope: this.authConfig.scope,
             audience: this.authConfig.audience,
-            responseType: "id_token token",
+            responseType: this.getResponseType(),
+            leeway: 30
         });
     }
 
     login(redirectUrl: string): void {
-        this.webAuth.authorize({state: redirectUrl});
+        this.webAuth.authorize({
+            state: redirectUrl,
+            redirectUri: this.authConfig.loginCallbackUrl,
+            responseType: this.getResponseType()
+        });
     }
 
     requestProfile(): Promise<any> {
@@ -58,7 +63,7 @@ class Auth0Provider implements IAuthProvider, IAuthDataRetriever {
 
     requestSSOData(): Promise<Auth0DecodedHash> {
         return new Promise((resolve, reject) => {
-            this.webAuth.renewAuth({redirectUri: this.authConfig.renewCallbackUrl},
+            this.webAuth.renewAuth({redirectUri: this.authConfig.renewCallbackUrl, usePostMessage: true},
                 (error, authResult: Auth0DecodedHash) => {
                     if (error || !authResult.accessToken || !authResult.idToken || !authResult.idTokenPayload) {
                         return reject(error);
@@ -114,6 +119,10 @@ class Auth0Provider implements IAuthProvider, IAuthDataRetriever {
 
     private saveUserProfile(userProfile: any) {
         this.settingsManager.setValue("auth_profile", userProfile);
+    }
+
+    private getResponseType(): string {
+        return "id_token token";
     }
 
 }
