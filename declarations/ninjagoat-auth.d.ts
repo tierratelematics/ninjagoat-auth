@@ -10,7 +10,7 @@ import {IRouteStrategy} from "ninjagoat";
 import {RegistryEntry} from "ninjagoat";
 import {RouterState} from "react-router";
 import {Observable, Disposable} from "rx";
-import {Auth0DecodedHash} from "auth0-js";
+import {Auth0DecodedHash, Auth0Error} from "auth0-js";
 
 export class AuthModule implements IModule {
 
@@ -42,6 +42,10 @@ export interface IAuthDataRetriever {
     getAccessToken(): string;
     getIDToken(): string;
     getUserId(): string;
+}
+
+export interface IAuthErrorHandler {
+    handleError(stage: AuthStage, error: any): Promise<void>;
 }
 
 export interface ISessionChecker {
@@ -78,6 +82,10 @@ export class Auth0Provider implements IAuthProvider, IAuthDataRetriever {
     getUserId(): string;
 }
 
+export class AuthErrorHandler implements IAuthErrorHandler {
+    handleError(stage: AuthStage, error: Auth0Error): Promise<void>;
+}
+
 export class SessionChecker implements ISessionChecker {
     check(interval?: number): Disposable;
 }
@@ -101,6 +109,11 @@ export class AuthRouteStrategy implements IRouteStrategy {
 
     enter(entry: RegistryEntry<any>, nextState: RouterState): Promise<string>;
 
+}
+
+export enum AuthStage {
+    LOGIN,
+    RENEWAL
 }
 
 export function Authorized();

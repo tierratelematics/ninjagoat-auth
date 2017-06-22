@@ -11,9 +11,11 @@ import {HttpClient} from "ninjagoat";
 import AuthHttpClient from "./auth0/AuthHttpClient";
 import IAuthDataRetriever from "./interfaces/IAuthDataRetriever";
 import ILocationNavigator from "./interfaces/ILocationNavigator";
+import IAuthErrorHandler from "./interfaces/IAuthErrorHandler";
 import LocationNavigator from "./LocationNavigator";
 import {IRouteStrategy} from "ninjagoat";
 import AuthRouteStrategy from "./auth0/AuthRouteStrategy";
+import AuthErrorHandler from "./auth0/AuthErrorHandler";
 import {Observable} from "rx";
 
 class AuthModule implements IModule {
@@ -21,6 +23,7 @@ class AuthModule implements IModule {
     modules = (container:interfaces.Container) => {
         container.bind<IAuthProvider>("IAuthProvider").to(Auth0Provider).inSingletonScope();
         container.bind<IAuthDataRetriever>("IAuthDataRetriever").to(Auth0Provider).inSingletonScope();
+        container.bind<IAuthErrorHandler>("IAuthErrorHandler").to(AuthErrorHandler).inSingletonScope();
         container.bind<ILocationNavigator>("ILocationNavigator").to(LocationNavigator).inSingletonScope();
         container.unbind("IHttpClient");
         container.bind<IHttpClient>("HttpClient").to(HttpClient).inSingletonScope().whenInjectedInto(AuthHttpClient);
