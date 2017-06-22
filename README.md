@@ -76,6 +76,20 @@ export class MasterViewModel extends ObservableViewModel<void> {
     }
 }
 ```
+A default error handler is provided. It logs out the current user, if there are errors during the auth renewal stage and force the user to re-login, if there are errors during the login stage.
+To customize authentication errors handling, you can implement IAuthErrorHandler. For example:
+
+```typescript
+import {IAuthErrorHandler} from "ninjagoat-auth";
+
+@injectable()
+export class CustomAuthErrorHandler implements IAuthErrorHandler {
+
+    handleError(stage: AuthStage, error: any): Promise<void> {
+        //here your custom code
+    }
+}
+```
 
 ### Authentication flow
 
