@@ -29,27 +29,36 @@ class AuthRouteStrategy implements IRouteStrategy {
         if (entry.id === "Index" && currentLocation.pathname !== "/") {
             return Promise.resolve("");
         }
+
         let needsAuthorization = <boolean>Reflect.getMetadata("ninjagoat:authorized", entry.construct);
         if (!needsAuthorization) return Promise.resolve("");
-        if ((currentLocation.origin.concat(currentLocation.pathname)) === (this.config.loginCallbackUrl) && currentLocation.hash !== "") {
-            if (currentLocation.hash.startsWith("#error")) {
-                let errorMessage = qs.parse(currentLocation.hash.replace("#", ""));
-                return Promise.resolve(
-                    this.authErrorHandler.handleError(AuthStage.LOGIN, <Auth0Error>{
-                        error: errorMessage.error,
-                        errorDescription: errorMessage.error_description})
-                    ).then(() => "");
-            }
-            return this.authProvider.parseHash(currentLocation.hash)
-                .then((authResult: Auth0DecodedHash) =>
-                    authResult.state ? decodeURIComponent(authResult.state).replace(currentLocation.origin, "") : currentLocation.pathname
-                );
+
+        if (this.hasAuth0Hash(currentLocation)) return this.handleRedirectionResult(currentLocation);
+        else return this.checkAuth();
+    }
+
+    private hasAuth0Hash(currentLocation: Location): boolean {
+        return (currentLocation.origin.concat(currentLocation.pathname) === this.config.loginCallbackUrl) && currentLocation.hash !== "";
+    }
+
+    private handleRedirectionResult(currentLocation: Location): Promise<string> {
+        if (currentLocation.hash.startsWith("#error")) {
+            let errorMessage = qs.parse(currentLocation.hash.replace("#", ""));
+            let auth0Error: Auth0Error = { error: errorMessage.error, errorDescription: errorMessage.error_description };
+            return Promise.resolve(this.authErrorHandler.handleError(AuthStage.LOGIN, auth0Error)).then(() => "");
         }
+        return this.authProvider.parseHash(currentLocation.hash)
+            .then((authResult: Auth0DecodedHash) =>
+                authResult.state ? decodeURIComponent(authResult.state).replace(currentLocation.origin, "") : currentLocation.pathname);
+    }
+
+    private checkAuth(): Promise<string> {
         if (!this.isAuthenticated) {
             return Promise.resolve(this.authProvider.renewAuth())
                 .then(() => {
                     this.isAuthenticated = true;
-                    return ""; })
+                    return "";
+                })
                 .catch((error) => {
                     this.isAuthenticated = false;
                     return Promise.resolve(this.authErrorHandler.handleError(AuthStage.LOGIN, error)).then(() => "");
