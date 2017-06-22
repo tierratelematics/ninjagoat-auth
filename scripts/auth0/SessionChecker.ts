@@ -1,6 +1,8 @@
 import ISessionChecker from "../interfaces/ISessionChecker";
 import IAuthProvider from "../interfaces/IAuthProvider";
 import ILocationNavigator from "../interfaces/ILocationNavigator";
+import IAuthErrorHandler from "../interfaces/IAuthErrorHandler";
+import AuthStage from "../AuthStage";
 import {injectable, inject} from "inversify";
 import {Observable, Disposable} from "rx";
 import {IUriResolver, RegistryEntry} from "ninjagoat";
@@ -12,7 +14,8 @@ class SessionChecker implements ISessionChecker {
 
     constructor(@inject("IAuthProvider") private authProvider:IAuthProvider,
                 @inject("ILocationNavigator") private locationNavigator: ILocationNavigator,
-                @inject("IUriResolver") private uriResolver: IUriResolver) {
+                @inject("IUriResolver") private uriResolver: IUriResolver,
+                @inject("IAuthErrorHandler") private authErrorHandler: IAuthErrorHandler) {
 
     }
 
@@ -25,7 +28,7 @@ class SessionChecker implements ISessionChecker {
             .flatMap(() => !this.needsAuthorization() ? Observable.empty() : Observable.fromPromise(this.authProvider.renewAuth()))
             .subscribeOnError((error) => {
                 this.subscription.dispose();
-                this.authProvider.logout(this.locationNavigator.getCurrentLocation().href);
+                this.authErrorHandler.handleError(AuthStage.RENEWAL, error);
             });
         return this.subscription;
     };

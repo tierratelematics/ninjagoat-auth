@@ -1,3 +1,7 @@
+# 2.4.0
+
+Add authentication errors management
+
 # 2.3.0
 
 Add getUserId in AuthDataRetriever
