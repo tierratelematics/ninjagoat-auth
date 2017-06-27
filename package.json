@@ -28,7 +28,7 @@
     "typemoq": "~0.2.0"
   },
   "peerDependencies": {
-    "ninjagoat": "^2.3.0"
+    "ninjagoat": "^2.3.4"
   },
   "scripts": {
     "test": "smild test"
