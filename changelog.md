@@ -1,3 +1,7 @@
+# 2.4.1
+
+Fix router types
+
 # 2.4.0
 
 Add authentication errors management
