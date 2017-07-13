@@ -1,7 +1,7 @@
 import IAuthProvider from "../interfaces/IAuthProvider";
 import {injectable, inject} from "inversify";
 import IAuthConfig from "../interfaces/IAuthConfig";
-import {WebAuth, Auth0DecodedHash} from "auth0-js";
+import {WebAuth, Auth0DecodedHash, ParseHashOptions} from "auth0-js";
 import {ISettingsManager} from "ninjagoat";
 import IAuthDataRetriever from "../interfaces/IAuthDataRetriever";
 import ILocationNavigator from "../interfaces/ILocationNavigator";
@@ -76,7 +76,7 @@ class Auth0Provider implements IAuthProvider, IAuthDataRetriever {
 
     parseHash(hash: string): Promise<Auth0DecodedHash> {
         return new Promise((resolve, reject) => {
-            this.webAuth.parseHash(hash, (error, authResult) => {
+            this.webAuth.parseHash(<ParseHashOptions>hash, (error, authResult) => {
                 if (error) return reject(error);
                 resolve(authResult);
             });
