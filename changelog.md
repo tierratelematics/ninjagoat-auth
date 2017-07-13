@@ -1,3 +1,7 @@
+# 2.5.0
+
+Bump to ninjagoat 2.4.0
+
 # 2.4.1
 
 Fix router types
