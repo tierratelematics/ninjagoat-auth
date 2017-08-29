@@ -1,3 +1,7 @@
+# 2.5.1
+
+Move types into dev deps
+
 # 2.5.0
 
 Bump to ninjagoat 2.4.0
