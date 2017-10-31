@@ -1,3 +1,4 @@
+
 import "reflect-metadata";
 import * as TypeMoq from "typemoq";
 import expect = require("expect.js");
@@ -10,6 +11,7 @@ import ILocationNavigator from "../scripts/interfaces/ILocationNavigator";
 import MockLocationNavigator from "./fixtures/MockLocationNavigator";
 import MockAuthErrorHandler from "./fixtures/MockAuthErrorHandler";
 import {Observable} from "rx";
+import {RegistryEntry} from "ninjagoat";
 
 describe("Given a ViewModel", () => {
 
@@ -33,12 +35,7 @@ describe("Given a ViewModel", () => {
     });
 
     context("when an authorization is needed to access that page", () => {
-        let entry = {
-            construct: AuthorizedViewModel,
-            id: null,
-            observableFactory: null,
-            parameters: null
-        };
+        let entry = new RegistryEntry(AuthorizedViewModel);
         context("and a sso session is active", () => {
             beforeEach(() => {
                 authProvider.setup(a => a.renewAuth()).returns(a => Promise.resolve(null));
@@ -139,12 +136,8 @@ describe("Given a ViewModel", () => {
             authErrorHandler.setup(e => e.handleError(TypeMoq.It.isAny(), TypeMoq.It.isAny())).returns(e => Promise.resolve());
         });
         it("should allow the user", () => {
-            subject.enter({
-                construct: UnauthorizedViewModel,
-                id: null,
-                observableFactory: null,
-                parameters: null
-            }, null);
+            let entry = new RegistryEntry(UnauthorizedViewModel);
+            subject.enter(entry, null);
             authProvider.verify(a => a.requestSSOData(), TypeMoq.Times.never());
             authProvider.verify(a => a.renewAuth(), TypeMoq.Times.never());
             authErrorHandler.verify(e => e.handleError(TypeMoq.It.isAny(), TypeMoq.It.isAny()), TypeMoq.Times.never());
