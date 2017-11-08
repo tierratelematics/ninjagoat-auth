@@ -5,7 +5,9 @@ install:
 - npm install smild@4.10.1 -g
 - npm install
 - npm install react@15 react-router@3 react-dom@15 ninjagoat@2.x
-script: smild test && smild build
+script:
+- smild test
+- smild build
 deploy:
   skip_cleanup: true
   provider: npm
