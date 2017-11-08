@@ -1,6 +1,7 @@
 import "reflect-metadata";
 import expect = require("expect.js");
 import * as TypeMoq from "typemoq";
+import {RegistryEntry} from "ninjagoat";
 import AuthRouteStrategy from "../scripts/auth0/AuthRouteStrategy";
 import MockAuthProvider from "./fixtures/MockAuthProvider";
 import IAuthDataRetriever from "../scripts/interfaces/IAuthDataRetriever";
@@ -27,12 +28,7 @@ describe("Given a ViewModel", () => {
     });
 
     context("when an authorization is needed to access that page", () => {
-        let entry = {
-            construct: AuthorizedViewModel,
-            id: null,
-            observableFactory: null,
-            parameters: null
-        };
+        let entry = new RegistryEntry(AuthorizedViewModel, null, null);
         context("and a saved token is present", () => {
             beforeEach(() => {
                 authProvider.setup(a => a.getIDToken()).returns(a => "testIdToken");
@@ -78,12 +74,7 @@ describe("Given a ViewModel", () => {
     context("when an authorization is not needed to access that page", () => {
         beforeEach(() => authProvider.setup(a => a.getIDToken()));
         it("should allow the user", () => {
-            subject.enter({
-                construct: UnauthorizedViewModel,
-                id: null,
-                observableFactory: null,
-                parameters: null
-            }, null);
+            subject.enter(new RegistryEntry(UnauthorizedViewModel, null, null), null);
             authProvider.verify(a => a.getIDToken(), TypeMoq.Times.never());
         });
     });
