@@ -14,7 +14,8 @@
       "es5",
       "es6",
       "dom"
-    ]
+    ],
+    "skipLibCheck": true
   },
   "include": [
     "node_modules/rx/ts/rx.all.d.ts"
