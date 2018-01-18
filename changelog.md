@@ -1,4 +1,4 @@
-# 2.5.0
+# 2.6.1
 
 Bump to ninjagoat 3.x
 
