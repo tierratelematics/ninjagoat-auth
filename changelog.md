@@ -1,3 +1,7 @@
+# 3.0.1
+
+Auto-generate declarations
+
 # 3.0.0
 
 Update React to v16
