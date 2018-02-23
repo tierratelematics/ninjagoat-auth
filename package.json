@@ -33,6 +33,6 @@
   "scripts": {
     "test": "smild test"
   },
-  "main": "dist/ninjagoat-auth.js",
-  "typings": "declarations/ninjagoat-auth.d.ts"
+  "main": "dist",
+  "typings": "dist"
 }
