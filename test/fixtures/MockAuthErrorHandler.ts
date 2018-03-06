@@ -1,7 +1,8 @@
+import { Auth0Error } from "auth0-js";
+import { injectable } from "inversify";
+
 import AuthStage from "../../scripts/AuthStage";
 import IAuthErrorHandler from "../../scripts/interfaces/IAuthErrorHandler";
-import {injectable} from "inversify";
-import {Auth0Error} from "auth0-js";
 
 @injectable()
 class MockAuthErrorHandler implements IAuthErrorHandler {
@@ -11,4 +12,4 @@ class MockAuthErrorHandler implements IAuthErrorHandler {
     }
 }
 
-export default MockAuthErrorHandler
+export default MockAuthErrorHandler;

@@ -1,35 +1,23 @@
-import IAuthProvider from "../interfaces/IAuthProvider";
-import {injectable, inject} from "inversify";
+import { Auth0DecodedHash, ParseHashOptions, WebAuth } from "auth0-js";
+import { inject, injectable } from "inversify";
+import { assign } from "lodash";
+import { ISettingsManager } from "ninjagoat";
+
 import IAuthConfig from "../interfaces/IAuthConfig";
-import {WebAuth, Auth0DecodedHash, ParseHashOptions} from "auth0-js";
-import {ISettingsManager} from "ninjagoat";
 import IAuthDataRetriever from "../interfaces/IAuthDataRetriever";
+import IAuthProvider from "../interfaces/IAuthProvider";
 import ILocationNavigator from "../interfaces/ILocationNavigator";
-import {assign} from "lodash";
 
 @injectable()
 class Auth0Provider implements IAuthProvider, IAuthDataRetriever {
-
     protected webAuth: WebAuth;
     private authConfig: IAuthConfig;
 
     constructor(@inject("IAuthConfig") authConfig: IAuthConfig,
-                @inject("ISettingsManager") private settingsManager: ISettingsManager,
-                @inject("ILocationNavigator") private locationNavigator: ILocationNavigator) {
-        this.authConfig = assign({}, {scope: "openid"}, authConfig);
+        @inject("ISettingsManager") private settingsManager: ISettingsManager,
+        @inject("ILocationNavigator") private locationNavigator: ILocationNavigator) {
+        this.authConfig = assign({}, { scope: "openid" }, authConfig);
         this.initialize();
-    }
-
-    private initialize() {
-        this.webAuth = new WebAuth({
-            domain: this.authConfig.clientNamespace,
-            clientID: this.authConfig.clientId,
-            redirectUri: this.authConfig.loginCallbackUrl,
-            scope: this.authConfig.scope,
-            audience: this.authConfig.audience,
-            responseType: this.getResponseType(),
-            leeway: 30
-        });
     }
 
     login(redirectUrl: string): void {
@@ -63,7 +51,7 @@ class Auth0Provider implements IAuthProvider, IAuthDataRetriever {
 
     requestSSOData(): Promise<Auth0DecodedHash> {
         return new Promise((resolve, reject) => {
-            this.webAuth.renewAuth({redirectUri: this.authConfig.renewCallbackUrl, usePostMessage: true},
+            this.webAuth.renewAuth({ redirectUri: this.authConfig.renewCallbackUrl, usePostMessage: true },
                 (error, authResult: Auth0DecodedHash) => {
                     if (error || !authResult.accessToken || !authResult.idToken || !authResult.idTokenPayload) {
                         return reject(error);
@@ -108,6 +96,18 @@ class Auth0Provider implements IAuthProvider, IAuthDataRetriever {
         return this.getUserProfile()[this.authConfig.audience + "/app_metadata"].userId;
     }
 
+    private initialize() {
+        this.webAuth = new WebAuth({
+            domain: this.authConfig.clientNamespace,
+            clientID: this.authConfig.clientId,
+            redirectUri: this.authConfig.loginCallbackUrl,
+            scope: this.authConfig.scope,
+            audience: this.authConfig.audience,
+            responseType: this.getResponseType(),
+            leeway: 30
+        });
+    }
+
     private saveAuthData(authResult: Auth0DecodedHash) {
         this.settingsManager.setValue("auth_id_token", authResult.idToken);
         this.settingsManager.setValue("auth_access_token", authResult.accessToken);
@@ -124,7 +124,6 @@ class Auth0Provider implements IAuthProvider, IAuthDataRetriever {
     private getResponseType(): string {
         return "id_token token";
     }
-
 }
 
-export default Auth0Provider
+export default Auth0Provider;

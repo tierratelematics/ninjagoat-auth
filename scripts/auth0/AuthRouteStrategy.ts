@@ -1,27 +1,25 @@
-import {IRouteStrategy} from "ninjagoat";
-import {RegistryEntry} from "ninjagoat";
-import {RouterState} from "react-router";
-import {inject, injectable} from "inversify";
-import IAuthProvider from "../interfaces/IAuthProvider";
-import IAuthDataRetriever from "../interfaces/IAuthDataRetriever";
-import ILocationNavigator from "../interfaces/ILocationNavigator";
-import IAuthConfig from "../interfaces/IAuthConfig";
-import IAuthErrorHandler from "../interfaces/IAuthErrorHandler";
-import AuthStage from "../AuthStage";
-import {Auth0DecodedHash, Auth0Error} from "auth0-js";
+import { Auth0DecodedHash, Auth0Error } from "auth0-js";
+import { inject, injectable } from "inversify";
+import { IRouteStrategy, RegistryEntry } from "ninjagoat";
 import * as qs from "qs";
+import { RouterState } from "react-router";
+
+import AuthStage from "../AuthStage";
+import IAuthConfig from "../interfaces/IAuthConfig";
+import IAuthDataRetriever from "../interfaces/IAuthDataRetriever";
+import IAuthErrorHandler from "../interfaces/IAuthErrorHandler";
+import IAuthProvider from "../interfaces/IAuthProvider";
+import ILocationNavigator from "../interfaces/ILocationNavigator";
 
 @injectable()
 class AuthRouteStrategy implements IRouteStrategy {
-
-    private isAuthenticated: boolean = false;
+    private isAuthenticated = false;
 
     constructor(@inject("IAuthProvider") private authProvider: IAuthProvider,
-                @inject("IAuthProvider") private authDataRetriever: IAuthDataRetriever,
-                @inject("ILocationNavigator") private locationNavigator: ILocationNavigator,
-                @inject("IAuthConfig") private config: IAuthConfig,
-                @inject("IAuthErrorHandler") private authErrorHandler: IAuthErrorHandler) {
-
+        @inject("IAuthProvider") private authDataRetriever: IAuthDataRetriever,
+        @inject("ILocationNavigator") private locationNavigator: ILocationNavigator,
+        @inject("IAuthConfig") private config: IAuthConfig,
+        @inject("IAuthErrorHandler") private authErrorHandler: IAuthErrorHandler) {
     }
 
     enter(entry: RegistryEntry<any>, nextState: RouterState): Promise<string> {
@@ -73,4 +71,4 @@ class AuthRouteStrategy implements IRouteStrategy {
 
 }
 
-export default AuthRouteStrategy
+export default AuthRouteStrategy;

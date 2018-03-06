@@ -1,16 +1,16 @@
+import { Auth0Error } from "auth0-js";
+import { inject, injectable } from "inversify";
+
 import AuthStage from "../AuthStage";
 import IAuthErrorHandler from "../interfaces/IAuthErrorHandler";
 import IAuthProvider from "../interfaces/IAuthProvider";
 import ILocationNavigator from "../interfaces/ILocationNavigator";
-import {injectable, inject} from "inversify";
-import {Auth0Error} from "auth0-js";
 
 @injectable()
 class AuthErrorHandler implements IAuthErrorHandler {
 
     constructor(@inject("IAuthProvider") private authProvider: IAuthProvider,
-                @inject("ILocationNavigator") private locationNavigator: ILocationNavigator) {
-
+        @inject("ILocationNavigator") private locationNavigator: ILocationNavigator) {
     }
 
     public handleError(stage: AuthStage, error: Auth0Error): Promise<void> {
@@ -28,4 +28,4 @@ class AuthErrorHandler implements IAuthErrorHandler {
     }
 }
 
-export default AuthErrorHandler
+export default AuthErrorHandler;

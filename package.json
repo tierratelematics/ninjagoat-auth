@@ -1,8 +1,8 @@
 {
   "name": "ninjagoat-auth",
-  "version": "3.0.3",
+  "version": "4.0.0",
   "dependencies": {
-    "auth0-js": "~8.7.0",
+    "auth0-js": "~9.3.2",
     "inversify": "^4.3.0",
     "lodash": "^4.17.5",
     "qs": "~6.4.0",
@@ -13,7 +13,6 @@
     "rx": "~4.1.0"
   },
   "devDependencies": {
-    "@types/auth0-js": "~8.6.1",
     "@types/history": "~2.0.41",
     "@types/lodash": "4.14.64",
     "@types/node": "~6.0.52",
