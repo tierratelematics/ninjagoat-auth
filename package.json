@@ -1,6 +1,6 @@
 {
   "name": "ninjagoat-auth",
-  "version": "2.5.1",
+  "version": "2.5.2",
   "dependencies": {
     "auth0-js": "~9.3.2",
     "inversify": "~3.0.0-rc.2",
